@@ -23,15 +23,31 @@ a:hover {
 }
 
 body {
+  background-image: url(./assets/star-trek-bg.webp);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
   margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
 }
 
 #root {
-  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 5;
+  &:before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+    background-color: #0000008c;
+  }
 }
 
 h1 {
