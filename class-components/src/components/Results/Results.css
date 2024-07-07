@@ -1,0 +1,32 @@
+.results {
+  display: flex;
+  padding: 15px;
+  flex-flow: column;
+  gap: 10px;
+  background-color: #ffffff6b;
+}
+
+.results__item {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-image: url(./src/assets/enterprize.png);
+  background-repeat: no-repeat;
+  background-size: 60px;
+  background-position: right 15px center;
+  background-color: rgb(33, 33, 33);
+  max-width: 100%;
+  display: flex;
+  flex-flow: column;
+  text-align: left;
+}
+
+.results__item-title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.results__item-season {
+  font-size: 14px;
+  color: #666;
+}
