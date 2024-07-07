@@ -3,13 +3,16 @@ import './App.css';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Results } from './components/Results/Results';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
-import { Episode, FetchEpisodes } from './services/DataFetch';
+import { Episode, FetchEpisodes} from './services/DataFetch';
 import { Button } from './utils/ui/Button/Button';
 
 interface AppState {
   searchItem: string;
   results: Episode[];
   error: Error | null;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 class App extends Component<object, AppState> {
@@ -17,23 +20,28 @@ class App extends Component<object, AppState> {
     searchItem: localStorage.getItem('searchItem') || '',
     results: [],
     error: null,
+    pageNumber: 1,
+    pageSize: 7,
+    totalPages: 0,
   };
 
   fetchEpisodes = new FetchEpisodes();
 
   componentDidMount() {
-    this.searchHandler(this.state.searchItem);
+    this.searchHandler(this.state.searchItem, this.state.pageNumber);
   }
 
-  setSearchResults = (results: Episode[]): void => {
-    this.setState({ results });
+  setSearchResults = (results: Episode[], totalPages: number): void => {
+    this.setState({ results, totalPages });
   };
 
   setError = (error: Error | null): void => {
-    this.setState({ error });
+    if (this.state.error) {
+      this.setState({ error });
+    }
   };
 
-  searchHandler = (searchItem: string): void => {
+  searchHandler = (searchItem: string, pageNumber: number): void => {
     const trimmedSearchItem = searchItem.trim();
     if (trimmedSearchItem !== '') {
       localStorage.setItem('searchItem', trimmedSearchItem);
@@ -41,27 +49,31 @@ class App extends Component<object, AppState> {
       localStorage.removeItem('searchItem');
     }
 
-    const url = `https://stapi.co/api/v1/rest/episode/search?pageSize=20&title=${encodeURIComponent(trimmedSearchItem)}`;
-    this.fetchEpisodes
-      .getEpisodes(url)
-      .then((response) => {
-        this.setSearchResults(response.episodes);
+    this.fetchEpisodes.getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
+      .then(response => {
+        this.setSearchResults(response.episodes, response.page.totalPages);
         this.setError(null);
       })
-      .catch((error) => {
+      .catch(error => {
         this.setError(error);
         console.error(error);
       });
 
-    this.setState({ searchItem });
+    this.setState({ searchItem, pageNumber });
   };
 
   triggerError = () => {
-    throw new Error('Test error');
+    this.setState({ error: new Error("Test error") });
+    throw new Error("Test error");
+  };
+
+  handlePageChange = (newPageNumber: number) => {
+    this.searchHandler(this.state.searchItem, newPageNumber);
   };
 
   render(): ReactNode {
-    const { searchItem, results, error } = this.state;
+    const { searchItem, results, error, pageNumber, totalPages } = this.state;
+
     return (
       <div id="app">
         <ErrorBoundary>
@@ -72,12 +84,10 @@ class App extends Component<object, AppState> {
               setError={this.setError}
               onSearch={this.searchHandler}
             />
-            <Button className="search-bar__error-button" onClick={this.triggerError}>
-              Trigger Error
-            </Button>
+            <Button onClick={this.triggerError}>Trigger Error</Button>
           </div>
           <div className="lower-section">
-            <Results episodes={results} />
+            <Results episodes={results} pageNumber={pageNumber} totalPages={totalPages} onPageChange={this.handlePageChange} />
           </div>
         </ErrorBoundary>
       </div>

@@ -51,8 +51,9 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 2em;
+  line-height: 0;
+  margin-right: auto;
 }
 
 button {
