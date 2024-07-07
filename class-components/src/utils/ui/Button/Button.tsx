@@ -1,9 +1,18 @@
-import { Component, ReactNode } from "react";
+import { Component, ReactNode } from 'react';
 
-export class Button extends Component {
+interface ButtonProps {
+  onClick: () => void;
+  children: ReactNode;
+  className: string;
+}
+
+export class Button extends Component<ButtonProps> {
   render(): ReactNode {
-    return <>
-      <button type="submit">Search!</button>
-    </>
+    const { onClick, children } = this.props;
+    return (
+      <button type="button" onClick={onClick}>
+        {children}
+      </button>
+    );
   }
 }

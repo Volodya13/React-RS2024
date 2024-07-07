@@ -1,12 +1,15 @@
-import { Component, ReactNode } from "react";
-import './Input.css'
+import { ChangeEvent, Component, ReactNode } from 'react';
+import './Input.css';
 
-export class Input extends Component {
+interface InputProps {
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export class Input extends Component<InputProps> {
   render(): ReactNode {
-    return <>
-      <input
-        type="text"
-        className="search-bar__input"/>
-    </>
+    const { value, onChange } = this.props;
+
+    return <input type="text" value={value} onChange={onChange} className="search-bar__input" />;
   }
 }
