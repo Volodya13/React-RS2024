@@ -1,9 +1,16 @@
 import { Component, ReactNode, ErrorInfo } from "react";
 
-export class ErrorBoundary extends Component {
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state = { hasError: false };
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(): ErrorBoundaryState | undefined {
     return { hasError: true };
   }
 
@@ -15,5 +22,6 @@ export class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return <div className="error-msg">Something went wrong</div>
     }
+    return this.props.children as ReactNode;
   }
 }
