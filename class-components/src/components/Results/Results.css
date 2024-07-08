@@ -19,14 +19,20 @@
   display: flex;
   flex-flow: column;
   text-align: left;
-}
 
-.results__item-title {
-  margin: 0;
-  font-size: 15px;
-}
+  .results__item-info {
+    display: flex;
+    gap: 10px;
+  }
 
-.results__item-season {
-  font-size: 14px;
-  color: #666;
+  .results__item-title {
+    margin: 0;
+    font-size: 15px;
+    color: red;
+  }
+
+  .results__item-season {
+    font-size: 14px;
+    color: #666;
+  }
 }
