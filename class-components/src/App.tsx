@@ -91,8 +91,8 @@ class App extends Component<object, AppState> {
     }
 
     return (
-      <div id="app">
-        <ErrorBoundary>
+      <ErrorBoundary>
+        <div id="app">
           <div className="upper-section">
             <SearchBar
               searchItem={searchItem}
@@ -110,8 +110,8 @@ class App extends Component<object, AppState> {
               onPageChange={this.handlePageChange}
             />
           </div>
-        </ErrorBoundary>
-      </div>
+        </div>
+      </ErrorBoundary>
     );
   }
 }

@@ -22,16 +22,6 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
   };
 
   render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-page">
-          <h1>Something went wrong</h1>
-          <p>We're sorry, but something went wrong. Please try again later.</p>
-          <button onClick={this.handleReload}>Reload</button>
-        </div>
-      );
-    }
-
     return this.props.children;
   }
 }

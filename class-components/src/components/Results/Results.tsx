@@ -16,10 +16,11 @@ export class Results extends Component<ResultsProps> {
     return episodes.map((episode, index) => (
       <div key={index} className="results__item">
         <h3 className="results__item-title">{episode.title}</h3>
-        <span className="results__item-info">
-          Season: {episode.seasonNumber}, Episode: {episode.episodeNumber}, Series:{' '}
-          {episode.seriesTitle}
-        </span>
+        <div className="results__item-info">
+          <div className="season"><b>Season:</b> {episode.seasonNumber},</div>
+          <div className="episode"><b>Episode</b>: {episode.episodeNumber},</div>
+          <div className="series"><b>Series:</b> {episode.seriesTitle}</div>
+        </div>
       </div>
     ));
   };
