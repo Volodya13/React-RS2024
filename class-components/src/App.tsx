@@ -41,7 +41,6 @@ class App extends Component<object, AppState> {
 
   loadAllEpisodes = (): void => {
     this.setState({ loading: true });
-    setTimeout(() => {
       this.fetchEpisodes
         .getEpisodes('', 1, this.state.pageSize)
         .then((response) => {
@@ -52,7 +51,6 @@ class App extends Component<object, AppState> {
           console.error(error);
           this.setState({ loading: false });
         });
-    }, 1400);
   };
 
   setSearchResults = (results: Episode[]): void => {
@@ -73,14 +71,12 @@ class App extends Component<object, AppState> {
     }
 
     this.setState({ loading: true });
-    setTimeout(() => {
       const filteredResults = this.state.allResults.filter(episode =>
         episode.title.toLowerCase().includes(trimmedSearchItem.toLowerCase())
       );
 
       this.setSearchResults(filteredResults);
       this.setState({ searchItem: trimmedSearchItem, pageNumber, loading: false });
-    }, 1400);
   };
 
   triggerError = () => {
