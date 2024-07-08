@@ -3,7 +3,21 @@
   gap: 10px;
   align-items: center;
   width: 85%;
+  position: relative;
+
   button {
     background-color: blue;
+  }
+
+  .warning,
+  .error {
+    position: absolute;
+    right: 7%;
+    top: -7px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #fff;
+    color: red;
+    margin-top: 10px;
   }
 }

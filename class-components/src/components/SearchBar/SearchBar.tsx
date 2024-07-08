@@ -2,37 +2,42 @@ import { ChangeEvent, Component, ReactNode } from 'react';
 import './SearchBar.css';
 import { Input } from '../../utils/ui/Input/Input';
 import { Button } from '../../utils/ui/Button/Button';
-import { Spinner } from '../Spinner/Spinner';
 
 interface SearchBarProps {
   searchItem: string;
   error: Error | null;
   setError: (error: Error | null) => void;
   onSearch: (searchItem: string, pageNumber: number) => void;
-  loading?: boolean
 }
 
-export class SearchBar extends Component<SearchBarProps> {
-  state = {
-    searchItem: '',
-    error: null,
-    loading: true,
-  }
+interface SearchBarState {
+  searchItem: string;
+  warning: string;
+}
+
+export class SearchBar extends Component<SearchBarProps, SearchBarState> {
+  state: SearchBarState = {
+    searchItem: this.props.searchItem,
+    warning: '',
+  };
+
   handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchItem = event.target.value;
-    this.props.onSearch(searchItem, 1);
+    this.setState({ searchItem, warning: '' });
   };
 
   handleSearch = () => {
-    this.props.onSearch(this.props.searchItem, 1);
+    const trimmedSearchItem = this.state.searchItem.trim();
+    if (trimmedSearchItem === '') {
+      this.setState({ warning: 'Please enter a search term.' });
+    } else {
+      this.props.onSearch(trimmedSearchItem, 1);
+    }
   };
 
   render(): ReactNode {
-    const { searchItem, error, loading } = this.props;
-
-    if (loading) {
-      return <Spinner />
-    }
+    const { error } = this.props;
+    const { searchItem, warning } = this.state;
 
     return (
       <div className="search-bar__container">
@@ -41,7 +46,8 @@ export class SearchBar extends Component<SearchBarProps> {
         <Button className="search-bar__search-button" onClick={this.handleSearch}>
           Search
         </Button>
-        {error && <div>Error: {error.message}</div>}
+        {warning && <div className="warning">{warning}</div>}
+        {error && <div className="error">Error: {error.message}</div>}
       </div>
     );
   }

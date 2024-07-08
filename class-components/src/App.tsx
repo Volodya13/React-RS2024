@@ -28,17 +28,17 @@ class App extends Component<object, AppState> {
   fetchEpisodes = new FetchEpisodes();
 
   componentDidMount() {
-    this.searchHandler(this.state.searchItem, this.state.pageNumber);
+    if (this.state.searchItem) {
+      this.searchHandler(this.state.searchItem, this.state.pageNumber);
+    }
   }
 
   setSearchResults = (results: Episode[], totalPages: number): void => {
-    this.setState({ results, totalPages });
+    this.setState({ results, totalPages, error: null });
   };
 
   setError = (error: Error | null): void => {
-    if (this.state.error) {
-      this.setState({ error });
-    }
+    this.setState({ error });
   };
 
   searchHandler = (searchItem: string, pageNumber: number): void => {
@@ -53,14 +53,13 @@ class App extends Component<object, AppState> {
       .getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
       .then((response) => {
         this.setSearchResults(response.episodes, response.page.totalPages);
-        this.setError(null);
       })
       .catch((error) => {
         this.setError(error);
         console.error(error);
       });
 
-    this.setState({ searchItem, pageNumber });
+    this.setState({ searchItem: trimmedSearchItem, pageNumber });
   };
 
   triggerError = () => {
@@ -72,7 +71,6 @@ class App extends Component<object, AppState> {
     this.searchHandler(this.state.searchItem, newPageNumber);
   };
 
-
   handleReload = () => {
     window.location.reload();
   };
@@ -80,7 +78,7 @@ class App extends Component<object, AppState> {
   render(): ReactNode {
     const { searchItem, results, error, pageNumber, totalPages } = this.state;
 
-      if (error) {
+    if (error) {
       return (
         <div className="error-page">
           <h2>Something went wrong</h2>
