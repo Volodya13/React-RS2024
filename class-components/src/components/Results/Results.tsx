@@ -17,11 +17,12 @@ export class Results extends Component<ResultsProps> {
       <div key={index} className="results__item">
         <h3 className="results__item-title">{episode.title}</h3>
         <span className="results__item-info">
-          Season: {episode.seasonNumber}, Episode: {episode.episodeNumber}, Series: {episode.seriesTitle}
+          Season: {episode.seasonNumber}, Episode: {episode.episodeNumber}, Series:{' '}
+          {episode.seriesTitle}
         </span>
       </div>
     ));
-  }
+  };
 
   renderPagination = (): ReactNode => {
     const { pageNumber, totalPages, onPageChange } = this.props;
@@ -31,13 +32,15 @@ export class Results extends Component<ResultsProps> {
         <button disabled={pageNumber === 1} onClick={() => onPageChange(pageNumber - 1)}>
           Previous
         </button>
-        <span>{pageNumber} / {totalPages}</span>
+        <span>
+          {pageNumber} / {totalPages}
+        </span>
         <button disabled={pageNumber === totalPages} onClick={() => onPageChange(pageNumber + 1)}>
           Next
         </button>
       </div>
     );
-  }
+  };
 
   render(): ReactNode {
     return (

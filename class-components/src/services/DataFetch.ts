@@ -20,7 +20,11 @@ export interface FetchEpisodesResponse {
 }
 
 export class FetchEpisodes {
-  getEpisodes = async (searchItem: string, pageNumber: number, pageSize: number): Promise<FetchEpisodesResponse> => {
+  getEpisodes = async (
+    searchItem: string,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<FetchEpisodesResponse> => {
     const url = `https://stapi.co/api/v1/rest/episode/search?title=${encodeURIComponent(searchItem)}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
     const response = await fetch(url);
 
@@ -30,14 +34,14 @@ export class FetchEpisodes {
 
     const data: FetchEpisodesResponse = await response.json();
     return {
-      episodes: data.episodes.map(episode => ({
+      episodes: data.episodes.map((episode) => ({
         uid: episode.uid,
         title: episode.title,
         seasonNumber: episode.seasonNumber,
         episodeNumber: episode.episodeNumber,
-        seriesTitle: episode.seriesTitle || ''
+        seriesTitle: episode.seriesTitle || '',
       })),
-      page: data.page
+      page: data.page,
     };
-  }
+  };
 }
