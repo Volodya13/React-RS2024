@@ -20,16 +20,25 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
     searchItem: this.props.searchItem,
     warning: '',
   };
+  componentDidMount() {
+    const savedSearchItem = localStorage.getItem('lastSearchItem');
+    if (savedSearchItem) {
+      this.setState({ searchItem: savedSearchItem });
+    }
+  }
 
   handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchItem = event.target.value;
     this.setState({ searchItem, warning: '' });
+    localStorage.setItem('lastSearchItem', searchItem);
   };
 
   handleSearch = () => {
     const trimmedSearchItem = this.state.searchItem.trim();
     if (trimmedSearchItem === '') {
       this.setState({ warning: 'Please enter a search term.' });
+    } else if (!/^[a-zA-Z\s]+$/.test(trimmedSearchItem)) {
+      this.setState({ warning: 'Please use only Latin letters.' });
     } else {
       this.props.onSearch(trimmedSearchItem, 1);
     }

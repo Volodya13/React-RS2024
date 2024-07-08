@@ -51,6 +51,12 @@
   }
 }
 
+.lower-section {
+  svg {
+    margin: 0 auto;
+  }
+}
+
 .error-page {
   position: absolute;
   width: 100%;
