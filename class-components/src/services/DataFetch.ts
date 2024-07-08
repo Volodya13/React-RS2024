@@ -45,11 +45,21 @@ export interface ApiFetchEpisodesResponse {
 
 export class FetchEpisodes {
   getEpisodes = async (searchItem: string, pageNumber: number, pageSize: number): Promise<FetchEpisodesResponse> => {
-    const url = `https://stapi.co/api/v1/rest/episode/search?title=${encodeURIComponent(searchItem)}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    const response = await fetch(url);
+    const url = `https://stapi.co/api/v1/rest/episode/search`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        title: searchItem,
+        pageNumber: pageNumber.toString(),
+        pageSize: pageSize.toString(),
+      }).toString(),
+    });
 
     if (!response.ok) {
-      throw new Error(`Not fetched ${url}, status: ${response.status}`);
+      throw new Error(`Failed to fetch ${url}, status: ${response.status}`);
     }
 
     const data: ApiFetchEpisodesResponse = await response.json();
@@ -65,3 +75,4 @@ export class FetchEpisodes {
     };
   }
 }
+
