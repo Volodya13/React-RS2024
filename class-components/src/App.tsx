@@ -3,7 +3,7 @@ import './App.css';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Results } from './components/Results/Results';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
-import { Episode, FetchEpisodes} from './services/DataFetch';
+import { Episode, FetchEpisodes } from './services/DataFetch';
 import { Button } from './utils/ui/Button/Button';
 
 interface AppState {
@@ -49,12 +49,13 @@ class App extends Component<object, AppState> {
       localStorage.removeItem('searchItem');
     }
 
-    this.fetchEpisodes.getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
-      .then(response => {
+    this.fetchEpisodes
+      .getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
+      .then((response) => {
         this.setSearchResults(response.episodes, response.page.totalPages);
         this.setError(null);
       })
-      .catch(error => {
+      .catch((error) => {
         this.setError(error);
         console.error(error);
       });
@@ -63,16 +64,31 @@ class App extends Component<object, AppState> {
   };
 
   triggerError = () => {
-    this.setState({ error: new Error("Test error") });
-    throw new Error("Test error");
+    this.setState({ error: new Error('Test error') });
+    throw new Error('Test error');
   };
 
   handlePageChange = (newPageNumber: number) => {
     this.searchHandler(this.state.searchItem, newPageNumber);
   };
 
+
+  handleReload = () => {
+    window.location.reload();
+  };
+
   render(): ReactNode {
     const { searchItem, results, error, pageNumber, totalPages } = this.state;
+
+      if (error) {
+      return (
+        <div className="error-page">
+          <h2>Something went wrong</h2>
+          <p>We're sorry, but something went wrong. Please try again later.</p>
+          <button onClick={this.handleReload}>Reload</button>
+        </div>
+      );
+    }
 
     return (
       <div id="app">
@@ -87,7 +103,12 @@ class App extends Component<object, AppState> {
             <Button onClick={this.triggerError}>Trigger Error</Button>
           </div>
           <div className="lower-section">
-            <Results episodes={results} pageNumber={pageNumber} totalPages={totalPages} onPageChange={this.handlePageChange} />
+            <Results
+              episodes={results}
+              pageNumber={pageNumber}
+              totalPages={totalPages}
+              onPageChange={this.handlePageChange}
+            />
           </div>
         </ErrorBoundary>
       </div>

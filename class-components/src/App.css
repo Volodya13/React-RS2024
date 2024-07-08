@@ -50,3 +50,18 @@
     background-color: red;
   }
 }
+
+.error-page {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  flex-flow: column;
+  text-align: center;
+  place-items: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #0009ff61;
+  color: #ebebeb;
+}
