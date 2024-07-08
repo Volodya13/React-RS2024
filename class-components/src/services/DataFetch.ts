@@ -74,5 +74,34 @@ export class FetchEpisodes {
       page: data.page,
     };
   }
+
+  searchEpisodes = async (searchItem: string): Promise<Episode[]> => {
+    const url = `https://stapi.co/api/v1/rest/episode/search`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        title: searchItem,
+        pageNumber: '0',
+        pageSize: '10',
+      }).toString(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}, status: ${response.status}`);
+    }
+
+    const data: ApiFetchEpisodesResponse = await response.json();
+    return data.episodes.map((episode: ApiEpisode) => ({
+      uid: episode.uid,
+      title: episode.title,
+      seasonNumber: episode.seasonNumber,
+      episodeNumber: episode.episodeNumber,
+      seriesTitle: episode.series.title,
+    }));
+  }
 }
+
 

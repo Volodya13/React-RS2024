@@ -8,6 +8,7 @@ interface SearchBarProps {
   error: Error | null;
   setError: (error: Error | null) => void;
   onSearch: (searchItem: string, pageNumber: number) => void;
+  onSearchChange: (searchItem: string) => void;
 }
 
 interface SearchBarState {
@@ -20,17 +21,11 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
     searchItem: this.props.searchItem,
     warning: '',
   };
-  componentDidMount() {
-    const savedSearchItem = localStorage.getItem('lastSearchItem');
-    if (savedSearchItem) {
-      this.setState({ searchItem: savedSearchItem });
-    }
-  }
 
   handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchItem = event.target.value;
     this.setState({ searchItem, warning: '' });
-    localStorage.setItem('lastSearchItem', searchItem);
+    this.props.onSearchChange(searchItem);
   };
 
   handleSearch = () => {

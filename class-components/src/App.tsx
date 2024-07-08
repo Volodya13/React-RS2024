@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react';
+import React, { Component, ReactNode } from 'react';
 import './App.css';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Results } from './components/Results/Results';
@@ -16,31 +16,41 @@ interface AppState {
   loading: boolean;
   pageSize: number;
   totalPages: number;
+  triggerError: boolean;
 }
 
 class App extends Component<object, AppState> {
   state: AppState = {
     searchItem: localStorage.getItem('searchItem') || '',
-    results: [],
+    results: JSON.parse(localStorage.getItem('results') || '[]'),
     allResults: [],
     loading: false,
     error: null,
-    pageNumber: 1,
+    pageNumber: Number(localStorage.getItem('pageNumber')) || 1,
     pageSize: 7,
-    totalPages: 0,
+    totalPages: Number(localStorage.getItem('totalPages')) || 0,
+    triggerError: false,
   };
 
   fetchEpisodes = new FetchEpisodes();
 
   componentDidMount() {
-    this.loadAllEpisodes();
     if (this.state.searchItem) {
-      this.searchHandler(this.state.searchItem, this.state.pageNumber);
+      this.searchHandler(this.state.searchItem, this.state.pageNumber, false);
+    } else {
+      this.loadAllEpisodes();
+    }
+  }
+
+  componentDidUpdate(_prevProps: AppState, prevState: AppState) {
+    if (this.state.error && !prevState.error) {
+      throw new Error(this.state.error.message);
     }
   }
 
   loadAllEpisodes = (): void => {
     this.setState({ loading: true });
+    setTimeout(() => {
       this.fetchEpisodes
         .getEpisodes('', 1, this.state.pageSize)
         .then((response) => {
@@ -51,37 +61,63 @@ class App extends Component<object, AppState> {
           console.error(error);
           this.setState({ loading: false });
         });
+    }, 400);
   };
 
   setSearchResults = (results: Episode[]): void => {
     this.setState({ results, error: null });
+    localStorage.setItem('results', JSON.stringify(results));
   };
 
   setError = (error: Error | null): void => {
     this.setState({ error });
   };
 
-  searchHandler = (searchItem: string, pageNumber: number): void => {
+  searchHandler = (searchItem: string, pageNumber: number, saveToLocalStorage = true): void => {
     const trimmedSearchItem = searchItem.trim();
-    if (trimmedSearchItem !== '') {
-      const timestamp = new Date().toISOString();
-      localStorage.setItem(`searchItem-${timestamp}`, trimmedSearchItem);
-    } else {
+    if (saveToLocalStorage && trimmedSearchItem !== '') {
+      localStorage.setItem('searchItem', trimmedSearchItem);
+    } else if (saveToLocalStorage) {
       localStorage.removeItem('searchItem');
     }
 
     this.setState({ loading: true });
-      const filteredResults = this.state.allResults.filter(episode =>
-        episode.title.toLowerCase().includes(trimmedSearchItem.toLowerCase())
-      );
+    setTimeout(() => {
+      this.fetchEpisodes
+        .getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
+        .then((response) => {
+          this.setSearchResults(response.episodes);
+          this.setState({ searchItem: trimmedSearchItem, pageNumber, totalPages: response.page.totalPages, loading: false });
+          localStorage.setItem('pageNumber', pageNumber.toString());
+          localStorage.setItem('totalPages', response.page.totalPages.toString());
+        })
+        .catch((error) => {
+          this.setError(error);
+          console.error(error);
+          this.setState({ loading: false });
+        });
+    }, 400);
+  };
 
-      this.setSearchResults(filteredResults);
-      this.setState({ searchItem: trimmedSearchItem, pageNumber, loading: false });
+  handleSearchChange = (searchItem: string): void => {
+    this.setState({ searchItem }, () => {
+      if (searchItem.trim() === '') {
+        this.setSearchResults(this.state.allResults);
+      } else {
+        this.fetchEpisodes.searchEpisodes(searchItem.trim())
+          .then((results) => {
+            this.setSearchResults(results);
+          })
+          .catch((error) => {
+            this.setError(error);
+            console.error(error);
+          });
+      }
+    });
   };
 
   triggerError = () => {
-    this.setState({ error: new Error('Test error') });
-    throw new Error('Test error');
+    this.setState({ triggerError: true, error: new Error('Test error') });
   };
 
   handlePageChange = (newPageNumber: number) => {
@@ -93,17 +129,7 @@ class App extends Component<object, AppState> {
   };
 
   render(): ReactNode {
-    const { searchItem, results, error, loading, pageNumber, totalPages } = this.state;
-
-    if (error) {
-      return (
-        <div className="error-page">
-          <h2>Something went wrong</h2>
-          <p>We're sorry, but something went wrong. Please try again later.</p>
-          <button onClick={this.handleReload}>Reload</button>
-        </div>
-      );
-    }
+    const { searchItem, results, loading, pageNumber, totalPages } = this.state;
 
     return (
       <ErrorBoundary>
@@ -111,21 +137,15 @@ class App extends Component<object, AppState> {
           <div className="upper-section">
             <SearchBar
               searchItem={searchItem}
-              error={error}
+              error={this.state.error}
               setError={this.setError}
               onSearch={this.searchHandler}
+              onSearchChange={this.handleSearchChange}
             />
             <Button onClick={this.triggerError}>Trigger Error</Button>
           </div>
           <div className="lower-section">
-            {loading
-            ? <Spinner />
-            : <Results
-                episodes={results}
-                pageNumber={pageNumber}
-                totalPages={totalPages}
-                onPageChange={this.handlePageChange}
-            />}
+            {loading ? <Spinner /> : <Results episodes={results} pageNumber={pageNumber} totalPages={totalPages} onPageChange={this.handlePageChange} />}
           </div>
         </div>
       </ErrorBoundary>

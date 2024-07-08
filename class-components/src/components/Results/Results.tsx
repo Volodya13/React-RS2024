@@ -18,7 +18,7 @@ export class Results extends Component<ResultsProps> {
         <h3 className="results__item-title">{episode.title}</h3>
         <div className="results__item-info">
           <div className="season"><b>Season:</b> {episode.seasonNumber},</div>
-          <div className="episode"><b>Episode</b>: {episode.episodeNumber},</div>
+          <div className="episode"><b>Episode:</b> {episode.episodeNumber},</div>
           <div className="series"><b>Series:</b> {episode.seriesTitle}</div>
         </div>
       </div>
