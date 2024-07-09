@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 import './App.css';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Results } from './components/Results/Results';
@@ -54,7 +54,12 @@ class App extends Component<object, AppState> {
       this.fetchEpisodes
         .getEpisodes('', 1, this.state.pageSize)
         .then((response) => {
-          this.setState({ allResults: response.episodes, results: response.episodes, totalPages: response.page.totalPages, loading: false });
+          this.setState({
+            allResults: response.episodes,
+            results: response.episodes,
+            totalPages: response.page.totalPages,
+            loading: false,
+          });
         })
         .catch((error) => {
           this.setError(error);
@@ -87,7 +92,12 @@ class App extends Component<object, AppState> {
         .getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
         .then((response) => {
           this.setSearchResults(response.episodes);
-          this.setState({ searchItem: trimmedSearchItem, pageNumber, totalPages: response.page.totalPages, loading: false });
+          this.setState({
+            searchItem: trimmedSearchItem,
+            pageNumber,
+            totalPages: response.page.totalPages,
+            loading: false,
+          });
           localStorage.setItem('pageNumber', pageNumber.toString());
           localStorage.setItem('totalPages', response.page.totalPages.toString());
         })
@@ -104,7 +114,8 @@ class App extends Component<object, AppState> {
       if (searchItem.trim() === '') {
         this.setSearchResults(this.state.allResults);
       } else {
-        this.fetchEpisodes.searchEpisodes(searchItem.trim())
+        this.fetchEpisodes
+          .searchEpisodes(searchItem.trim())
           .then((results) => {
             this.setSearchResults(results);
           })
@@ -145,7 +156,16 @@ class App extends Component<object, AppState> {
             <Button onClick={this.triggerError}>Trigger Error</Button>
           </div>
           <div className="lower-section">
-            {loading ? <Spinner /> : <Results episodes={results} pageNumber={pageNumber} totalPages={totalPages} onPageChange={this.handlePageChange} />}
+            {loading ? (
+              <Spinner />
+            ) : (
+              <Results
+                episodes={results}
+                pageNumber={pageNumber}
+                totalPages={totalPages}
+                onPageChange={this.handlePageChange}
+              />
+            )}
           </div>
         </div>
       </ErrorBoundary>

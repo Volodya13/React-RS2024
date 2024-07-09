@@ -44,7 +44,11 @@ export interface ApiFetchEpisodesResponse {
 }
 
 export class FetchEpisodes {
-  getEpisodes = async (searchItem: string, pageNumber: number, pageSize: number): Promise<FetchEpisodesResponse> => {
+  getEpisodes = async (
+    searchItem: string,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<FetchEpisodesResponse> => {
     const url = `https://stapi.co/api/v1/rest/episode/search`;
     const response = await fetch(url, {
       method: 'POST',
@@ -73,7 +77,7 @@ export class FetchEpisodes {
       })),
       page: data.page,
     };
-  }
+  };
 
   searchEpisodes = async (searchItem: string): Promise<Episode[]> => {
     const url = `https://stapi.co/api/v1/rest/episode/search`;
@@ -101,7 +105,5 @@ export class FetchEpisodes {
       episodeNumber: episode.episodeNumber,
       seriesTitle: episode.series.title,
     }));
-  }
+  };
 }
-
-
