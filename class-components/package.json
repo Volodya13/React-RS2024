@@ -33,9 +33,7 @@
     "vite-plugin-svgr": "^4.2.0"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{ts,tsx}": "prettier --write",
+    "+.{ts,tsx,html,css}": "eslint"
   }
 }
