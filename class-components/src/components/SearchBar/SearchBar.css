@@ -6,7 +6,7 @@
   flex-flow: wrap;
 
   .search-bar__input {
-    max-width: 70% ;
+    max-width: 70%;
   }
   button {
     background-color: blue;

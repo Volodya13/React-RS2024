@@ -63,22 +63,23 @@ export const SearchComponent: React.FC = () => {
 
   const searchHandler = (query: string, pageNumber: number, saveToLocalStorage = true): void => {
     const trimmedSearchItem = query.trim();
-    if (saveToLocalStorage && trimmedSearchItem !== '') {
-      localStorage.setItem('searchItem', trimmedSearchItem);
-    } else if (saveToLocalStorage) {
-      localStorage.removeItem('searchItem');
-    }
-
     setLoading(true);
     fetchEpisodes
       .searchEpisodes(trimmedSearchItem)
       .then((response) => {
-        setSearchResults(response);
-        setSearchItem(trimmedSearchItem);
-        setTotalPages(Math.ceil(response.length / pageSize));
-        setLoading(false);
-        localStorage.setItem('pageNumber', pageNumber.toString());
-        localStorage.setItem('totalPages', Math.ceil(response.length / pageSize).toString());
+        if (response.length === 0) {
+          navigate('/404');
+        } else {
+          setSearchResults(response);
+          setSearchItem(trimmedSearchItem);
+          setTotalPages(Math.ceil(response.length / pageSize));
+          setLoading(false);
+          if (saveToLocalStorage && trimmedSearchItem !== '') {
+            localStorage.setItem('searchItem', trimmedSearchItem);
+            localStorage.setItem('pageNumber', pageNumber.toString());
+            localStorage.setItem('totalPages', Math.ceil(response.length / pageSize).toString());
+          }
+        }
       })
       .catch((error) => {
         setError(error);
@@ -91,9 +92,15 @@ export const SearchComponent: React.FC = () => {
     setSearchItem(query);
     if (query.trim() === '') {
       setResults(allResults);
-    } else {
-      searchHandler(query, 1, false);
+      localStorage.removeItem('searchItem');
+      localStorage.removeItem('results');
+      localStorage.removeItem('pageNumber');
+      localStorage.removeItem('totalPages');
     }
+  };
+
+  const handleSearch = (query: string) => {
+    searchHandler(query, 1, true);
   };
 
   const triggerErrorHandler = () => {
@@ -118,7 +125,7 @@ export const SearchComponent: React.FC = () => {
             searchItem={searchItem}
             error={error}
             setError={setError}
-            onSearch={(query, pageNumber) => searchHandler(query, pageNumber)}
+            onSearch={handleSearch}
             onSearchChange={handleSearchChange}
           />
           <Button onClick={triggerErrorHandler}>Trigger Error</Button>

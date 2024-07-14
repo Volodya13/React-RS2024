@@ -20,17 +20,6 @@ export function Results({
     return episodes.map((episode) => (
       <div key={episode.uid} className="results__item" onClick={() => onEpisodeClick(episode.uid)}>
         <h3 className="results__item-title">{episode.title}</h3>
-        <div className="results__item-info">
-          <div className="season">
-            <b>Season:</b> {episode.seasonNumber},
-          </div>
-          <div className="episode">
-            <b>Episode:</b> {episode.episodeNumber},
-          </div>
-          <div className="series">
-            <b>Series:</b> {episode.seriesTitle}
-          </div>
-        </div>
       </div>
     ));
   };

@@ -1,20 +1,20 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SearchComponent } from './components/SearchComponent/SearchComponent';
 import './App.css';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary.tsx';
+import { NotFound } from './components/NotFound/NotFound.tsx';
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <ErrorBoundary>
-        <div id="app">
-          <Routes>
-            <Route path="/" element={<SearchComponent />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<SearchComponent />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </ErrorBoundary>
-    </BrowserRouter>
+    </Router>
   );
 };
 

@@ -7,7 +7,15 @@ interface SearchBarProps {
   searchItem: string;
   error: Error | null;
   setError: (error: Error | null) => void;
-  onSearch: (searchItem: string, pageNumber: number) => void;
+  onSearch: (searchItem: string) => void;
+  onSearchChange: (searchItem: string) => void;
+}
+
+interface SearchBarProps {
+  searchItem: string;
+  error: Error | null;
+  setError: (error: Error | null) => void;
+  onSearch: (searchItem: string) => void;
   onSearchChange: (searchItem: string) => void;
 }
 
@@ -25,12 +33,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleSearch = () => {
     const trimmedSearchItem = searchItem.trim();
-    const regex = /^[a-zA-Z\d]+$/;
+    const regex = /^[a-zA-Z\s]+$/;
     if (!regex.test(trimmedSearchItem)) {
       setError(new Error('Please use only Latin letters.'));
     } else {
-      setError(null);
-      onSearch(trimmedSearchItem, 1);
+      setError(null); // сброс ошибки, если запрос корректный
+      onSearch(trimmedSearchItem);
     }
   };
 

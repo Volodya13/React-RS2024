@@ -12,13 +12,14 @@
   border-radius: 5px;
   background-image: url(../../assets/enterprize.png);
   background-repeat: no-repeat;
-  background-size: 60px;
+  background-size: 40px;
   background-position: right 15px center;
   background-color: rgb(33, 33, 33);
   max-width: 100%;
   display: flex;
   flex-flow: column;
   text-align: left;
+  transition: all 0.2s ease-in-out;
 
   .results__item-info {
     display: flex;
@@ -34,5 +35,11 @@
   .results__item-season {
     font-size: 14px;
     color: #666;
+  }
+}
+@media (hover: hover) {
+  .results__item:hover {
+    scale: 1.03;
+    cursor: pointer;
   }
 }
