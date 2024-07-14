@@ -79,6 +79,14 @@ export class FetchEpisodes {
     };
   };
 
+  async getEpisodeById(id: string): Promise<Episode> {
+    const response = await fetch(`https://api.example.com/episodes/${id}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  }
+
   searchEpisodes = async (searchItem: string): Promise<Episode[]> => {
     const url = `https://stapi.co/api/v1/rest/episode/search`;
     const response = await fetch(url, {
