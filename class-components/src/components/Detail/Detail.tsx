@@ -10,24 +10,25 @@ const Detail: React.FC<DetailComponentProps> = ({ id }) => {
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  const fetchEpisodes = new FetchEpisodes();
 
   useEffect(() => {
-    fetchEpisodes
-      .getEpisodeById(id)
-      .then((response) => {
-        setEpisode(response);
+    const fetchEpisode = async () => {
+      try {
+        const fetchEpisodes = new FetchEpisodes();
+        const result = await fetchEpisodes.getEpisodeById(id);
+        setEpisode(result);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setError(error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchEpisode();
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return 'Loading...';
   }
 
   if (error) {
@@ -35,41 +36,26 @@ const Detail: React.FC<DetailComponentProps> = ({ id }) => {
   }
 
   if (!episode) {
-    return <div>Episode not found</div>;
+    return <div>No episode data found.</div>;
   }
-
+  console.log(episode);
   return (
     <div className="detail-component">
       <h2>{episode.title}</h2>
       <p>
-        <strong>Season:</strong> {episode.season?.title || 'N/A'}
+        <strong>Season:</strong> {episode.season?.title}
       </p>
       <p>
-        <strong>Episode Number:</strong> {episode.episodeNumber}
+        <strong>Episode:</strong> {episode.episodeNumber}
       </p>
       <p>
-        <strong>Series:</strong> {episode.series?.title || 'N/A'}
+        <strong>Series:</strong> {episode.series?.title}
       </p>
       <p>
-        <strong>Production Serial Number:</strong> {episode.productionSerialNumber}
+        <strong>Directors:</strong> {episode.directors?.map((item) => item.name)}
       </p>
       <p>
-        <strong>Feature Length:</strong> {episode.featureLength ? 'Yes' : 'No'}
-      </p>
-      <p>
-        <strong>Stardate From:</strong> {episode.stardateFrom || 'N/A'}
-      </p>
-      <p>
-        <strong>Stardate To:</strong> {episode.stardateTo || 'N/A'}
-      </p>
-      <p>
-        <strong>US Air Date:</strong> {episode.usAirDate || 'N/A'}
-      </p>
-      <p>
-        <strong>Year From:</strong> {episode.yearFrom || 'N/A'}
-      </p>
-      <p>
-        <strong>Year To:</strong> {episode.yearTo || 'N/A'}
+        <strong>Writers:</strong> {episode.writers?.map((item): string => item.name).join(', ')}
       </p>
     </div>
   );

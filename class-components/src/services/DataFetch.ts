@@ -1,8 +1,13 @@
+export interface Authors {
+  name: string;
+}
 export interface Episode {
   uid: string;
   title: string;
   seasonNumber: number;
   episodeNumber: number;
+  directors: Authors[];
+  writers: Authors[];
   series: {
     uid: string;
     title: string;
@@ -63,7 +68,8 @@ export class FetchEpisodes {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-    return response.json();
+    const data = await response.json();
+    return data.episode;
   }
 
   async searchEpisodes(query: string): Promise<Episode[]> {
