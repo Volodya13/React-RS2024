@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { Results } from './components/Results/Results';
@@ -7,78 +7,67 @@ import { Episode, FetchEpisodes } from './services/DataFetch';
 import { Button } from './utils/ui/Button/Button';
 import { Spinner } from './components/Spinner/Spinner';
 
-interface AppState {
-  searchItem: string;
-  results: Episode[];
-  allResults: Episode[];
-  error: Error | null;
-  pageNumber: number;
-  loading: boolean;
-  pageSize: number;
-  totalPages: number;
-  triggerError: boolean;
-}
+const App: React.FC = () => {
+  const [searchItem, setSearchItem] = useState<string>(localStorage.getItem('searchItem') || '');
+  const [results, setResults] = useState<Episode[]>(
+    JSON.parse(localStorage.getItem('results') || '[]'),
+  );
+  const [allResults, setAllResults] = useState<Episode[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(
+    Number(localStorage.getItem('pageNumber')) || 1,
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+  const [pageSize] = useState<number>(7);
+  const [totalPages, setTotalPages] = useState<number>(
+    Number(localStorage.getItem('totalPages')) || 0,
+  );
+  // const [triggerError, setTriggerError] = useState<boolean>(false);
 
-class App extends Component<object, AppState> {
-  state: AppState = {
-    searchItem: localStorage.getItem('searchItem') || '',
-    results: JSON.parse(localStorage.getItem('results') || '[]'),
-    allResults: [],
-    loading: false,
-    error: null,
-    pageNumber: Number(localStorage.getItem('pageNumber')) || 1,
-    pageSize: 7,
-    totalPages: Number(localStorage.getItem('totalPages')) || 0,
-    triggerError: false,
-  };
+  const fetchEpisodes = new FetchEpisodes();
 
-  fetchEpisodes = new FetchEpisodes();
-
-  componentDidMount() {
-    if (this.state.searchItem) {
-      this.searchHandler(this.state.searchItem, this.state.pageNumber, false);
+  useEffect(() => {
+    if (searchItem) {
+      searchHandler(searchItem, pageNumber, false);
     } else {
-      this.loadAllEpisodes();
+      loadAllEpisodes();
     }
-  }
+  }, []);
 
-  componentDidUpdate(_prevProps: AppState, prevState: AppState) {
-    if (this.state.error && !prevState.error) {
-      throw new Error(this.state.error.message);
+  useEffect(() => {
+    if (error) {
+      throw new Error(error.message);
     }
-  }
+  }, [error]);
 
-  loadAllEpisodes = (): void => {
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.fetchEpisodes
-        .getEpisodes('', 1, this.state.pageSize)
-        .then((response) => {
-          this.setState({
-            allResults: response.episodes,
-            results: response.episodes,
-            totalPages: response.page.totalPages,
-            loading: false,
-          });
-        })
-        .catch((error) => {
-          this.setError(error);
-          console.error(error);
-          this.setState({ loading: false });
-        });
-    }, 400);
+  const loadAllEpisodes = (): void => {
+    setLoading(true);
+    fetchEpisodes
+      .getEpisodes('', 1, pageSize)
+      .then((response) => {
+        setAllResults(response.episodes);
+        setResults(response.episodes);
+        setTotalPages(response.page.totalPages);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error(error);
+        setLoading(false);
+      });
   };
 
-  setSearchResults = (results: Episode[]): void => {
-    this.setState({ results, error: null });
+  const setSearchResults = (results: Episode[]): void => {
+    setResults(results);
+    setError(null);
     localStorage.setItem('results', JSON.stringify(results));
   };
 
-  setError = (error: Error | null): void => {
-    this.setState({ error });
-  };
-
-  searchHandler = (searchItem: string, pageNumber: number, saveToLocalStorage = true): void => {
+  const searchHandler = (
+    searchItem: string,
+    pageNumber: number,
+    saveToLocalStorage = true,
+  ): void => {
     const trimmedSearchItem = searchItem.trim();
     if (saveToLocalStorage && trimmedSearchItem !== '') {
       localStorage.setItem('searchItem', trimmedSearchItem);
@@ -86,91 +75,78 @@ class App extends Component<object, AppState> {
       localStorage.removeItem('searchItem');
     }
 
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.fetchEpisodes
-        .getEpisodes(trimmedSearchItem, pageNumber, this.state.pageSize)
-        .then((response) => {
-          this.setSearchResults(response.episodes);
-          this.setState({
-            searchItem: trimmedSearchItem,
-            pageNumber,
-            totalPages: response.page.totalPages,
-            loading: false,
-          });
-          localStorage.setItem('pageNumber', pageNumber.toString());
-          localStorage.setItem('totalPages', response.page.totalPages.toString());
+    setLoading(true);
+    fetchEpisodes
+      .getEpisodes(trimmedSearchItem, pageNumber, pageSize)
+      .then((response) => {
+        setSearchResults(response.episodes);
+        setSearchItem(trimmedSearchItem);
+        setPageNumber(pageNumber);
+        setTotalPages(response.page.totalPages);
+        setLoading(false);
+        localStorage.setItem('pageNumber', pageNumber.toString());
+        localStorage.setItem('totalPages', response.page.totalPages.toString());
+      })
+      .catch((error) => {
+        setError(error);
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  const handleSearchChange = (searchItem: string): void => {
+    setSearchItem(searchItem);
+    if (searchItem.trim() === '') {
+      setSearchResults(allResults);
+    } else {
+      fetchEpisodes
+        .searchEpisodes(searchItem.trim())
+        .then((results) => {
+          setSearchResults(results);
         })
         .catch((error) => {
-          this.setError(error);
+          setError(error);
           console.error(error);
-          this.setState({ loading: false });
         });
-    }, 400);
+    }
   };
 
-  handleSearchChange = (searchItem: string): void => {
-    this.setState({ searchItem }, () => {
-      if (searchItem.trim() === '') {
-        this.setSearchResults(this.state.allResults);
-      } else {
-        this.fetchEpisodes
-          .searchEpisodes(searchItem.trim())
-          .then((results) => {
-            this.setSearchResults(results);
-          })
-          .catch((error) => {
-            this.setError(error);
-            console.error(error);
-          });
-      }
-    });
+  const triggerErrorHandler = () => {
+    setError(new Error('Test error'));
   };
 
-  triggerError = () => {
-    this.setState({ triggerError: true, error: new Error('Test error') });
+  const handlePageChange = (newPageNumber: number) => {
+    searchHandler(searchItem, newPageNumber);
   };
 
-  handlePageChange = (newPageNumber: number) => {
-    this.searchHandler(this.state.searchItem, newPageNumber);
-  };
-
-  handleReload = () => {
-    window.location.reload();
-  };
-
-  render(): ReactNode {
-    const { searchItem, results, loading, pageNumber, totalPages } = this.state;
-
-    return (
-      <ErrorBoundary>
-        <div id="app">
-          <div className="upper-section">
-            <SearchBar
-              searchItem={searchItem}
-              error={this.state.error}
-              setError={this.setError}
-              onSearch={this.searchHandler}
-              onSearchChange={this.handleSearchChange}
-            />
-            <Button onClick={this.triggerError}>Trigger Error</Button>
-          </div>
-          <div className="lower-section">
-            {loading ? (
-              <Spinner />
-            ) : (
-              <Results
-                episodes={results}
-                pageNumber={pageNumber}
-                totalPages={totalPages}
-                onPageChange={this.handlePageChange}
-              />
-            )}
-          </div>
+  return (
+    <ErrorBoundary>
+      <div id="app">
+        <div className="upper-section">
+          <SearchBar
+            searchItem={searchItem}
+            error={error}
+            setError={setError}
+            onSearch={searchHandler}
+            onSearchChange={handleSearchChange}
+          />
+          <Button onClick={triggerErrorHandler}>Trigger Error</Button>
         </div>
-      </ErrorBoundary>
-    );
-  }
-}
+        <div className="lower-section">
+          {loading ? (
+            <Spinner />
+          ) : (
+            <Results
+              episodes={results}
+              pageNumber={pageNumber}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+};
 
 export default App;
