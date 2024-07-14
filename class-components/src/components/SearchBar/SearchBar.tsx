@@ -33,11 +33,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleSearch = () => {
     const trimmedSearchItem = searchItem.trim();
-    const regex = /^[a-zA-Z\s]+$/;
+    const regex = /^[a-zA-Z\d]+$/;
     if (!regex.test(trimmedSearchItem)) {
       setError(new Error('Please use only Latin letters.'));
     } else {
-      setError(null); // сброс ошибки, если запрос корректный
+      setError(null);
       onSearch(trimmedSearchItem);
     }
   };

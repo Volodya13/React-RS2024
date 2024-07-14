@@ -8,7 +8,7 @@ import { Spinner } from '../Spinner/Spinner';
 import './SearchComponent.css';
 import Detail from '../Detail/Detail.tsx';
 
-export const SearchComponent: React.FC = () => {
+export const SearchComponent = () => {
   const [searchItem, setSearchItem] = useState<string>(localStorage.getItem('searchItem') || '');
   const [results, setResults] = useState<Episode[]>([]);
   const [allResults, setAllResults] = useState<Episode[]>([]);

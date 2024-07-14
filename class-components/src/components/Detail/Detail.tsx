@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Episode, FetchEpisodes } from '../../services/DataFetch';
 import './Detail.css';
 
@@ -38,7 +38,7 @@ const Detail: React.FC<DetailComponentProps> = ({ id }) => {
   if (!episode) {
     return <div>No episode data found.</div>;
   }
-  console.log(episode);
+
   return (
     <div className="detail-component">
       <h2>{episode.title}</h2>
