@@ -2,9 +2,12 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  width: 85%;
   position: relative;
+  flex-flow: wrap;
 
+  .search-bar__input {
+    max-width: 70%;
+  }
   button {
     background-color: blue;
   }

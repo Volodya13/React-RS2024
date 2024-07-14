@@ -46,6 +46,8 @@
   display: flex;
   padding-bottom: 15px;
   justify-content: space-between;
+  flex-flow: column;
+  gap: 10px;
   button {
     background-color: red;
   }
@@ -70,4 +72,8 @@
   align-items: center;
   background-color: #0009ff61;
   color: #ebebeb;
+}
+
+aside {
+  max-width: 30%;
 }

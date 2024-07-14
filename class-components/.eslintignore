@@ -3,7 +3,7 @@ node_modules/
 
 dist/
 build/
-out//**/node_modules/*
+out/**/node_modules/*
 node_modules/
 
 dist/
