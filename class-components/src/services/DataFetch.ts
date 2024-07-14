@@ -3,115 +3,82 @@ export interface Episode {
   title: string;
   seasonNumber: number;
   episodeNumber: number;
-  seriesTitle: string;
-}
-
-export interface FetchEpisodesResponse {
-  episodes: Episode[];
-  page: {
-    pageNumber: number;
-    pageSize: number;
-    numberOfElements: number;
-    totalElements: number;
-    totalPages: number;
-    firstPage: boolean;
-    lastPage: boolean;
-  };
-}
-
-export interface ApiEpisode {
-  uid: string;
-  title: string;
-  seasonNumber: number;
-  episodeNumber: number;
   series: {
     uid: string;
     title: string;
   };
+  season: {
+    uid: string;
+    title: string;
+  };
+  productionSerialNumber: string;
+  featureLength: boolean;
+  stardateFrom: number | null;
+  stardateTo: number | null;
+  yearFrom: number | null;
+  yearTo: number | null;
+  usAirDate: string;
 }
 
-export interface ApiFetchEpisodesResponse {
-  episodes: ApiEpisode[];
+interface FetchEpisodesResponse {
   page: {
     pageNumber: number;
     pageSize: number;
-    numberOfElements: number;
     totalElements: number;
     totalPages: number;
     firstPage: boolean;
     lastPage: boolean;
   };
+  episodes: Episode[];
 }
 
 export class FetchEpisodes {
-  getEpisodes = async (
-    searchItem: string,
-    pageNumber: number,
-    pageSize: number,
-  ): Promise<FetchEpisodesResponse> => {
-    const url = `https://stapi.co/api/v1/rest/episode/search`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = 'https://stapi.co/api/v1/rest';
+  }
+
+  async getEpisodes(pageNumber: number, pageSize: number): Promise<FetchEpisodesResponse> {
+    const response = await fetch(
+      `${this.baseUrl}/episode/search?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Accept: 'application/json',
+        },
       },
-      body: new URLSearchParams({
-        title: searchItem,
-        pageNumber: pageNumber.toString(),
-        pageSize: pageSize.toString(),
-      }).toString(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${url}, status: ${response.status}`);
-    }
-
-    const data: ApiFetchEpisodesResponse = await response.json();
-    return {
-      episodes: data.episodes.map((episode: ApiEpisode) => ({
-        uid: episode.uid,
-        title: episode.title,
-        seasonNumber: episode.seasonNumber,
-        episodeNumber: episode.episodeNumber,
-        seriesTitle: episode.series.title,
-      })),
-      page: data.page,
-    };
-  };
-
-  async getEpisodeById(id: string): Promise<Episode> {
-    const response = await fetch(`https://api.example.com/episodes/${id}`);
+    );
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
     return response.json();
   }
 
-  searchEpisodes = async (searchItem: string): Promise<Episode[]> => {
-    const url = `https://stapi.co/api/v1/rest/episode/search`;
-    const response = await fetch(url, {
+  async getEpisodeById(id: string): Promise<Episode> {
+    const response = await fetch(`${this.baseUrl}/episode?uid=${id}`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  }
+
+  async searchEpisodes(query: string): Promise<Episode[]> {
+    const response = await fetch(`${this.baseUrl}/episode/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
       },
-      body: new URLSearchParams({
-        title: searchItem,
-        pageNumber: '0',
-        pageSize: '10',
-      }).toString(),
+      body: new URLSearchParams({ title: query }),
     });
-
     if (!response.ok) {
-      throw new Error(`Failed to fetch ${url}, status: ${response.status}`);
+      throw new Error('Network response was not ok');
     }
-
-    const data: ApiFetchEpisodesResponse = await response.json();
-    return data.episodes.map((episode: ApiEpisode) => ({
-      uid: episode.uid,
-      title: episode.title,
-      seasonNumber: episode.seasonNumber,
-      episodeNumber: episode.episodeNumber,
-      seriesTitle: episode.series.title,
-    }));
-  };
+    const data: FetchEpisodesResponse = await response.json();
+    return data.episodes;
+  }
 }

@@ -1,0 +1,9 @@
+.search-component {
+  display: flex;
+}
+
+section {
+  width: 50%;
+  padding: 20px;
+  border-left: 1px solid #ccc;
+}

@@ -1,37 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { Results } from '../Results/Results';
 import { Episode, FetchEpisodes } from '../../services/DataFetch';
 import { Button } from '../../utils/ui/Button/Button';
 import { Spinner } from '../Spinner/Spinner';
+import './SearchComponent.css';
+import Detail from '../Detail/Detail.tsx';
 
 export const SearchComponent: React.FC = () => {
   const [searchItem, setSearchItem] = useState<string>(localStorage.getItem('searchItem') || '');
-  const [results, setResults] = useState<Episode[]>(
-    JSON.parse(localStorage.getItem('results') || '[]'),
-  );
+  const [results, setResults] = useState<Episode[]>([]);
   const [allResults, setAllResults] = useState<Episode[]>([]);
   const [error, setError] = useState<Error | null>(null);
-  const [pageNumber, setPageNumber] = useState<number>(
-    Number(localStorage.getItem('pageNumber')) || 1,
-  );
   const [loading, setLoading] = useState<boolean>(false);
   const [pageSize] = useState<number>(7);
-  const [totalPages, setTotalPages] = useState<number>(
-    Number(localStorage.getItem('totalPages')) || 0,
-  );
+  const [totalPages, setTotalPages] = useState<number>(0);
 
   const fetchEpisodes = new FetchEpisodes();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const pageNumber = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
     if (searchItem) {
       searchHandler(searchItem, pageNumber, false);
     } else {
-      loadAllEpisodes();
+      loadAllEpisodes(pageNumber);
     }
-  }, []);
+  }, [pageNumber]);
 
   useEffect(() => {
     if (error) {
@@ -39,10 +38,10 @@ export const SearchComponent: React.FC = () => {
     }
   }, [error]);
 
-  const loadAllEpisodes = (): void => {
+  const loadAllEpisodes = (pageNumber: number): void => {
     setLoading(true);
     fetchEpisodes
-      .getEpisodes('', 1, pageSize)
+      .getEpisodes(pageNumber, pageSize)
       .then((response) => {
         setAllResults(response.episodes);
         setResults(response.episodes);
@@ -62,12 +61,8 @@ export const SearchComponent: React.FC = () => {
     localStorage.setItem('results', JSON.stringify(results));
   };
 
-  const searchHandler = (
-    searchItem: string,
-    pageNumber: number,
-    saveToLocalStorage = true,
-  ): void => {
-    const trimmedSearchItem = searchItem.trim();
+  const searchHandler = (query: string, pageNumber: number, saveToLocalStorage = true): void => {
+    const trimmedSearchItem = query.trim();
     if (saveToLocalStorage && trimmedSearchItem !== '') {
       localStorage.setItem('searchItem', trimmedSearchItem);
     } else if (saveToLocalStorage) {
@@ -76,15 +71,14 @@ export const SearchComponent: React.FC = () => {
 
     setLoading(true);
     fetchEpisodes
-      .getEpisodes(trimmedSearchItem, pageNumber, pageSize)
+      .searchEpisodes(trimmedSearchItem)
       .then((response) => {
-        setSearchResults(response.episodes);
+        setSearchResults(response);
         setSearchItem(trimmedSearchItem);
-        setPageNumber(pageNumber);
-        setTotalPages(response.page.totalPages);
+        setTotalPages(Math.ceil(response.length / pageSize));
         setLoading(false);
         localStorage.setItem('pageNumber', pageNumber.toString());
-        localStorage.setItem('totalPages', response.page.totalPages.toString());
+        localStorage.setItem('totalPages', Math.ceil(response.length / pageSize).toString());
       })
       .catch((error) => {
         setError(error);
@@ -93,20 +87,12 @@ export const SearchComponent: React.FC = () => {
       });
   };
 
-  const handleSearchChange = (searchItem: string): void => {
-    setSearchItem(searchItem);
-    if (searchItem.trim() === '') {
-      setSearchResults(allResults);
+  const handleSearchChange = (query: string): void => {
+    setSearchItem(query);
+    if (query.trim() === '') {
+      setResults(allResults);
     } else {
-      fetchEpisodes
-        .searchEpisodes(searchItem.trim())
-        .then((results) => {
-          setSearchResults(results);
-        })
-        .catch((error) => {
-          setError(error);
-          console.error(error);
-        });
+      searchHandler(query, 1, false);
     }
   };
 
@@ -115,22 +101,24 @@ export const SearchComponent: React.FC = () => {
   };
 
   const handlePageChange = (newPageNumber: number) => {
-    searchHandler(searchItem, newPageNumber);
+    setSearchParams({ page: newPageNumber.toString() });
   };
 
   const handleEpisodeClick = (id: string) => {
-    navigate(`/detail/${id}`);
+    const currentParams = new URLSearchParams(location.search);
+    currentParams.set('details', id);
+    navigate({ search: currentParams.toString() });
   };
 
   return (
-    <div>
+    <div className="search-component">
       <aside>
         <div className="upper-section">
           <SearchBar
             searchItem={searchItem}
             error={error}
             setError={setError}
-            onSearch={searchHandler}
+            onSearch={(query, pageNumber) => searchHandler(query, pageNumber)}
             onSearchChange={handleSearchChange}
           />
           <Button onClick={triggerErrorHandler}>Trigger Error</Button>
@@ -149,6 +137,9 @@ export const SearchComponent: React.FC = () => {
           )}
         </div>
       </aside>
+      <section>
+        {searchParams.get('details') && <Detail id={searchParams.get('details')!} />}
+      </section>
     </div>
   );
 };
