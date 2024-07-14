@@ -6,17 +6,6 @@ interface ButtonProps {
   className?: string;
 }
 
-/*export class Button extends Component<ButtonProps> {
-  render(): ReactNode {
-    const { onClick, children } = this.props;
-    return (
-      <button type="button" onClick={onClick}>
-        {children}
-      </button>
-    );
-  }
-}*/
-
 export function Button(props: ButtonProps) {
   const { onClick, children, className } = props;
 
