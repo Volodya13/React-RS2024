@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Episode, FetchEpisodes } from '../../services/DataFetch';
-import './Detail.css';
+import styles from './Detail.module.css';
+// import cn from 'classnames';
 
 interface DetailComponentProps {
   id: string;
@@ -40,7 +41,7 @@ const Detail: React.FC<DetailComponentProps> = ({ id }) => {
   }
 
   return (
-    <div className="detail-component">
+    <div className={styles['detail-component']}>
       <h2>{episode.title}</h2>
       <p>
         <strong>Season:</strong> {episode.season?.title}

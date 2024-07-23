@@ -1,5 +1,5 @@
 import { Episode } from '../../services/DataFetch';
-import './Results.css';
+import styles from './Results.module.css';
 
 interface ResultsProps {
   episodes: Episode[];
@@ -18,15 +18,15 @@ export function Results({
 }: ResultsProps) {
   const renderEpisodes = () => {
     return episodes.map((episode) => (
-      <div key={episode.uid} className="results__item" onClick={() => onEpisodeClick(episode.uid)}>
-        <h3 className="results__item-title">{episode.title}</h3>
+      <div key={episode.uid} className={styles["results__item"]} onClick={() => onEpisodeClick(episode.uid)}>
+        <h3 className={styles["results__item-title"]}>{episode.title}</h3>
       </div>
     ));
   };
 
   const renderPagination = () => {
     return (
-      <div className="pagination">
+      <div className={styles["pagination"]}>
         <button disabled={pageNumber === 1} onClick={() => onPageChange(pageNumber - 1)}>
           Previous
         </button>
@@ -41,7 +41,7 @@ export function Results({
   };
 
   return (
-    <div className="results">
+    <div className={styles["results"]}>
       {renderEpisodes()}
       {renderPagination()}
     </div>

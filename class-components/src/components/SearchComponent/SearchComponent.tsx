@@ -5,7 +5,7 @@ import { Results } from '../Results/Results';
 import { Episode, FetchEpisodes } from '../../services/DataFetch';
 import { Button } from '../../utils/ui/Button/Button';
 import { Spinner } from '../Spinner/Spinner';
-import './SearchComponent.css';
+import styles from './SearchComponent.module.css';
 import Detail from '../Detail/Detail.tsx';
 
 export const SearchComponent = () => {
@@ -118,9 +118,9 @@ export const SearchComponent = () => {
   };
 
   return (
-    <div className="search-component">
+    <div className={styles["search-component"]}>
       <aside>
-        <div className="upper-section">
+        <div className={styles["upper-section"]}>
           <SearchBar
             searchItem={searchItem}
             error={error}
@@ -130,7 +130,7 @@ export const SearchComponent = () => {
           />
           <Button onClick={triggerErrorHandler}>Trigger Error</Button>
         </div>
-        <div className="lower-section">
+        <div className={styles["lower-section"]}>
           {loading ? (
             <Spinner />
           ) : (
