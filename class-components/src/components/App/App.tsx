@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { SearchComponent } from './components/SearchComponent/SearchComponent';
+import { SearchComponent } from '../SearchComponent/SearchComponent';
 import './App.css';
-import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary.tsx';
-import { NotFound } from './components/NotFound/NotFound.tsx';
+import { ErrorBoundary } from '../ErrorBoundary/ErrorBoundary.tsx';
+import { NotFound } from '../NotFound/NotFound';
 
 const App: React.FC = () => {
   return (
