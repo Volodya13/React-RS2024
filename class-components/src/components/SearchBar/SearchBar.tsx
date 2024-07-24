@@ -43,13 +43,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className={styles["search-bar"]}>
+    <div className={styles['search-bar']}>
       <h1>Space - final frontier!</h1>
       <Input value={searchItem} onChange={handleChange} />
-      <Button className={styles["search-button"]} onClick={handleSearch}>
+      <Button className={styles['search-button']} onClick={handleSearch}>
         Search
       </Button>
-      {error && <div className={styles["error"]}>Error: {error.message}</div>}
+      {error && <div className={styles['error']}>Error: {error.message}</div>}
     </div>
   );
 };

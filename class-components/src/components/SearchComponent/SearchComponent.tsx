@@ -118,9 +118,9 @@ export const SearchComponent = () => {
   };
 
   return (
-    <div className={styles["search-component"]}>
+    <div className={styles['search-component']}>
       <aside>
-        <div className={styles["upper-section"]}>
+        <div className={styles['upper-section']}>
           <SearchBar
             searchItem={searchItem}
             error={error}
@@ -130,7 +130,7 @@ export const SearchComponent = () => {
           />
           <Button onClick={triggerErrorHandler}>Trigger Error</Button>
         </div>
-        <div className={styles["lower-section"]}>
+        <div className={styles['lower-section']}>
           {loading ? (
             <Spinner />
           ) : (
