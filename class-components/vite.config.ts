@@ -17,7 +17,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './jest.setup.ts',
     coverage: {
+      include: ['src/**/*'],
       reporter: ['text', 'json', 'html'],
+      exclude: ['**/index.ts', '**/main.tsx', '**/App.tsx', '**/ErrorBoundary.tsx'],
     },
     exclude: [...configDefaults.exclude, 'packages/template/*'],
   },
