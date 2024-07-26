@@ -1,12 +1,24 @@
+.search-bar-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  flex-flow: wrap;
+}
+
 .search-bar {
   display: flex;
   gap: 10px;
   align-items: center;
   position: relative;
   flex-flow: wrap;
-
+  height: fit-content;
+  max-width: 460px;
+  padding-bottom: 20px;
   .search-bar__input {
-    max-width: 70%;
+    max-width: 60%;
   }
   button {
     background-color: blue;

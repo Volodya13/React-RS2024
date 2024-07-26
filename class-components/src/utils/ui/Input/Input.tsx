@@ -4,6 +4,7 @@ import styles from './Input.module.css';
 interface InputProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
 }
 
 export function Input(props: InputProps) {

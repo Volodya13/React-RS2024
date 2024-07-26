@@ -1,23 +1,39 @@
 #app {
   transition: all 0.5s ease;
-
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 0;
+  grid-row-gap: 0;
 }
 
 .light-app {
   background-color: #ffffff;
-  color: #000000;
+  background-image: url('../../assets/star-trek-bg-light.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  color: #2e2e2e;
   height: 100dvh;
 }
 
 .dark-app {
-  background-color: #000000;
+  background-color: #3d3d3d;
   color: #ffffff;
+  background-image: url('../../assets/star-trek-bg-dark.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 100dvh;
 }
 .header {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding: 1em 2em;
+  height: fit-content;
+  width: fit-content;
+  grid-area: 1 / 6 / 2 / 7;
   .dark-button {
     background-color: #ffffff;
     color: #393939;

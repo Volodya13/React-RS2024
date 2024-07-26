@@ -1,63 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { Episode, FetchEpisodes } from '../../services/DataFetch';
+import { FC } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useGetEpisodeByIdQuery } from '../../services/episodesApi';
 import styles from './Detail.module.css';
-// import cn from 'classnames';
+import { Button } from '../../utils/ui/Button/Button.tsx';
 
-interface DetailComponentProps {
-  id: string;
-}
+const Detail: FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data, error, isLoading } = useGetEpisodeByIdQuery(id || '');
 
-const Detail: React.FC<DetailComponentProps> = ({ id }) => {
-  const [episode, setEpisode] = useState<Episode | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const handleClose = () => {
+    navigate('/');
+  };
 
-  useEffect(() => {
-    const fetchEpisode = async () => {
-      try {
-        const fetchEpisodes = new FetchEpisodes();
-        const result = await fetchEpisodes.getEpisodeById(id);
-        setEpisode(result);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEpisode();
-  }, [id]);
-
-  if (loading) {
-    return 'Loading...';
+  if (isLoading) {
+    return <div className={styles['loading']}>Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div className={styles['error']}>Error: {error.toString()}</div>;
   }
 
-  if (!episode) {
-    return <div>No episode data found.</div>;
+  if (!data) {
+    return <div className={styles['no-data']}>No data found</div>;
   }
-
+  console.log('data', data);
   return (
-    <div className={styles['detail-component']}>
-      <h2>{episode.title}</h2>
-      <p>
-        <strong>Season:</strong> {episode.season?.title}
-      </p>
-      <p>
-        <strong>Episode:</strong> {episode.episodeNumber}
-      </p>
-      <p>
-        <strong>Series:</strong> {episode.series?.title}
-      </p>
-      <p>
-        <strong>Directors:</strong> {episode.directors?.map((item) => item.name)}
-      </p>
-      <p>
-        <strong>Writers:</strong> {episode.writers?.map((item): string => item.name).join(', ')}
-      </p>
+    <div className={styles['detail']}>
+      <Button onClick={handleClose} className={styles['close-button']}>
+        Close
+      </Button>
+      {data && (
+        <div>
+          <h1>{data.title}</h1>
+          <p>{data.usAirDate}</p>
+          <p>{data.uid}</p>
+        </div>
+      )}
     </div>
   );
 };
