@@ -5,6 +5,7 @@
   grid-template-rows: repeat(5, 1fr);
   grid-column-gap: 0;
   grid-row-gap: 0;
+  padding: 0 25px;
 }
 
 .light-app {
@@ -15,6 +16,10 @@
   background-repeat: no-repeat;
   color: #2e2e2e;
   height: 100dvh;
+  button {
+    background-color: #393939;
+    color: #ffffff;
+  }
 }
 
 .dark-app {
@@ -25,6 +30,14 @@
   background-position: center center;
   background-repeat: no-repeat;
   height: 100dvh;
+  button {
+    background-color: #ffffff;
+    color: #393939;
+  }
+  input {
+    background-color: #ffffff;
+    color: #393939;
+  }
 }
 .header {
   display: flex;

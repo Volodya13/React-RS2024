@@ -9,16 +9,7 @@ export const setupStore = configureStore({
     episodes: episodesReducer,
     [episodesAPI.reducerPath]: episodesAPI.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          'episodesAPI/executeQuery/pending',
-          'episodesAPI/executeQuery/fulfilled',
-          'episodesAPI/executeQuery/rejected',
-        ],
-      },
-    }).concat(episodesAPI.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(episodesAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof setupStore.getState>;

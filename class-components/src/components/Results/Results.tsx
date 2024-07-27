@@ -1,63 +1,27 @@
 import styles from './Results.module.css';
 import { Spinner } from '../Spinner/Spinner';
-import { useGetAllEpisodesQuery } from '../../services/episodesApi.ts';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux.ts';
-import { FC, useEffect } from 'react';
-import { setPageNumber, setTotalPages } from '../../store/reducers/paginationSlice.ts';
-import { Button } from '../../utils/ui/Button/Button.tsx';
+import { useGetAllEpisodesQuery } from '../../services/episodesApi';
+import { FC } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import Pagination from '../Pagination/Pagination.tsx';
 
 const Results: FC = () => {
-  const dispatch = useAppDispatch();
-  const { pageNumber, pageSize } = useAppSelector((state) => state.pagination);
-  const { data, isError, isLoading } = useGetAllEpisodesQuery({ pageNumber, pageSize });
-  const totalPages = useAppSelector((state) => state.pagination.totalPages);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '0', 10);
+  const { data, isError, isLoading } = useGetAllEpisodesQuery(page);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const page = parseInt(searchParams.get('page') || '0', 10);
-    console.log('Setting page number from URL:', page);
-    dispatch(setPageNumber(page));
-  }, [searchParams, dispatch]);
-
-  useEffect(() => {
-    if (data) {
-      console.log('Setting total pages from data:', data.page.totalPages);
-      dispatch(setTotalPages(data.page.totalPages));
-    }
-  }, [data, dispatch]);
-
-  const handlePrev = () => {
-    if (pageNumber > 0) {
-      const newPageNum = pageNumber - 1;
-      console.log('Previous page:', newPageNum);
-      dispatch(setPageNumber(newPageNum));
-      setSearchParams({ page: newPageNum.toString() });
-      navigate(`?page=${newPageNum}`);
-    }
-  };
-
-  const handleNext = () => {
-    if (pageNumber < totalPages - 1) {
-      const newPageNum = pageNumber + 1;
-      console.log('Next page:', newPageNum);
-      dispatch(setPageNumber(newPageNum));
-      setSearchParams({ page: newPageNum.toString() });
-      navigate(`?page=${newPageNum}`);
-      console.log('newPageNum', newPageNum);
-    }
-  };
-
   const handleEpisodeClick = (episodeId: string) => {
-    navigate(`/details/${episodeId}`);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', page.toString());
+    navigate(`/details/${episodeId}?${params.toString()}`);
   };
 
   return (
     <div className={styles['results']}>
       {isLoading && <Spinner />}
       {isError && <div>Something went wrong...</div>}
-      {data && (
+      {data && data.episodes.length === 0 && <div>No episodes available.</div>}
+      {data && data.episodes.length > 0 && (
         <ul>
           {data.episodes.map((episode) => (
             <li
@@ -71,25 +35,7 @@ const Results: FC = () => {
           ))}
         </ul>
       )}
-      <div className={styles['pagination']}>
-        <Button
-          onClick={handlePrev}
-          className={styles['pagination-button']}
-          disabled={pageNumber <= 0}
-        >
-          Previous
-        </Button>
-        <span className={styles['pagination-info']}>
-          {/*Page {data?.page.pageNumber + 1} of {data?.page.totalPages}*/}
-        </span>
-        <Button
-          onClick={handleNext}
-          className={styles['pagination-button']}
-          disabled={pageNumber >= totalPages - 1}
-        >
-          Next
-        </Button>
-      </div>
+      <Pagination />
     </div>
   );
 };
