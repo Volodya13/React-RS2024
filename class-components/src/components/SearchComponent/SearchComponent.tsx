@@ -14,9 +14,6 @@ const SearchComponent: FC = () => {
           setError={() => {
             throw new Error('Function not implemented.');
           }}
-          onSearchChange={() => {
-            throw new Error('Function not implemented.');
-          }}
           onSearch={() => {
             throw new Error('Function not implemented.');
           }}
