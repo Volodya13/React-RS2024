@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Results from '../Results/Results';
 import styles from './SearchComponent.module.css';
 import { SearchBar } from '../SearchBar/SearchBar.tsx';
+import Flyout from '../Flyout/Flyout.tsx';
 
 const SearchComponent: FC = () => {
   return (
@@ -19,6 +20,7 @@ const SearchComponent: FC = () => {
           }}
         />
         <Results />
+        <Flyout />
       </div>
       <div className={styles['details-section']}>
         <Outlet />

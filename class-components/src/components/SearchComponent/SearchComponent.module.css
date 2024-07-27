@@ -4,7 +4,8 @@
   justify-content: center;
   align-items: center;
   max-width: fit-content;
-  grid-area: 1 / 1 / 7 / 3;;
+  grid-area: 1 / 1 / 7 / 3;
+  gap: 15px;
 }
 .details-section {
   display: flex;

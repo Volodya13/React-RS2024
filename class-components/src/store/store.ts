@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import episodesReducer from './reducers/episodesSlice';
-import paginationSlice from './reducers/paginationSlice.ts';
+import paginationSlice from './reducers/paginationSlice';
 import { episodesAPI } from '../services/episodesApi';
+import selectedItemsReducer from './reducers/selectedItemsSlice';
 
 export const setupStore = configureStore({
   reducer: {
+    selectedItems: selectedItemsReducer,
     pagination: paginationSlice,
     episodes: episodesReducer,
     [episodesAPI.reducerPath]: episodesAPI.reducer,

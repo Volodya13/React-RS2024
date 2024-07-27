@@ -13,7 +13,7 @@ export const episodesAPI = createApi({
         url: `/episode/search`,
         params: {
           pageNumber: page,
-          pageSize: 7,
+          pageSize: 15,
         },
       }),
     }),

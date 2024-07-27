@@ -10,13 +10,12 @@
 
 .search-bar {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: center;
   position: relative;
   flex-flow: wrap;
   height: fit-content;
   max-width: 460px;
-  padding-bottom: 20px;
   .search-bar__input {
     max-width: 60%;
   }

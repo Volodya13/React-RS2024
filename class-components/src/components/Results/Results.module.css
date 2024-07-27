@@ -1,11 +1,11 @@
 .results {
   display: flex;
-  padding: 15px;
+  padding: 15px 3px;
   flex-flow: column;
   gap: 10px;
   background-color: #ffffff6b;
   min-width: 420px;
-  max-width: 501dvw;
+  max-width: 500px;
   ul {
     list-style: none;
     padding: 0;
@@ -14,7 +14,7 @@
 }
 
 .results__item {
-  padding: 15px;
+  padding: 0 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-image: url(../../assets/enterprize.png);
@@ -27,6 +27,7 @@
   flex-flow: column;
   text-align: left;
   transition: all 0.2s ease-in-out;
+  position: relative;
 
   .results__item-info {
     display: flex;
@@ -39,14 +40,19 @@
 
   .results__item-title {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    /*color: red;*/
   }
 
   .results__item-season {
     font-size: 14px;
     color: #666;
+  }
+
+  input[type="checkbox"] {
+    position: absolute;
+    top: 10px;
+    left: 10px;
   }
 }
 @media (hover: hover) {
