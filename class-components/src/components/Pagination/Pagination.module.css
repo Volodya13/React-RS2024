@@ -1,7 +1,7 @@
 .pagination {
   display: flex;
   justify-content: center;
-  align-items: center;;
+  align-items: center;
   gap: 5px;
   width: fit-content;
   & .pagination-button {

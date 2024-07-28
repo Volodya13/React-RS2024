@@ -5,7 +5,7 @@
   align-items: center;
   max-width: fit-content;
   grid-area: 1 / 1 / 7 / 3;
-  gap: 15px;
+  gap: 7px;
 }
 .details-section {
   display: flex;

@@ -83,3 +83,13 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+input[type='checkbox' i] {
+  background-color: initial;
+  cursor: default;
+  appearance: auto;
+  box-sizing: border-box;
+  margin: 3px 3px 3px 4px;
+  padding: initial;
+  border: initial;
+}

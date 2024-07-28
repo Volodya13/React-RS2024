@@ -22,8 +22,13 @@ const selectedItemsSlice = createSlice({
     unselectAllItems: (state) => {
       state.selectedItems = [];
     },
+    selectItems: (state, action: PayloadAction<IEpisode[]>) => {
+      state.selectedItems = action.payload;
+    },
   },
 });
 
-export const { selectItem, unselectItem, unselectAllItems } = selectedItemsSlice.actions;
+export const { selectItem, unselectItem, unselectAllItems, selectItems } =
+  selectedItemsSlice.actions;
+
 export default selectedItemsSlice.reducer;

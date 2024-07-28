@@ -49,7 +49,7 @@
     color: #666;
   }
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     position: absolute;
     top: 10px;
     left: 10px;

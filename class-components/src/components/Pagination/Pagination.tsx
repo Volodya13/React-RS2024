@@ -25,7 +25,7 @@ const Pagination = () => {
       >
         ◀️
       </Button>
-      <span className={styles['pagination-info']}>Page {currentPage}</span>
+      <span className={styles['pagination-info']}>Page {currentPage + 1}</span>
       <Button onClick={handleClickNext} className={styles['pagination-button']}>
         ▶️
       </Button>

@@ -12,7 +12,19 @@ const Flyout: FC = () => {
   const handleDownload = () => {
     const CSV =
       'data:text/csv;charset=utf-8,' +
-      selectedItems.map((item: IEpisode) => `${item.title},${item.usAirDate}`).join('\n');
+      selectedItems
+        .map(
+          (item: IEpisode) =>
+            `
+            ${item.title},
+            ${item.usAirDate},
+            ${item.uid},
+            ${item.episode?.title},
+            ${item.episode?.directors.map((item) => item.name)},
+            ${item.episode?.characters.map((item) => item.name)}
+            `,
+        )
+        .join('\n');
     const encodedUri = encodeURI(CSV);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -32,11 +44,13 @@ const Flyout: FC = () => {
 
   return (
     <div className={styles['flyout']}>
-      <p className={styles['counter']}>
-        Selected: <span>{selectedItems.length}</span>
-      </p>
-      <Button onClick={handleDownload}>Download</Button>
-      <Button onClick={handleUnselectAll}>Unselect all</Button>
+      <div className={styles['flyout-wrapper']}>
+        <p className={styles['counter']}>
+          Selected: <span>{selectedItems.length}</span>
+        </p>
+        <Button onClick={handleDownload}>Download</Button>
+        <Button onClick={handleUnselectAll}>Unselect all</Button>
+      </div>
     </div>
   );
 };

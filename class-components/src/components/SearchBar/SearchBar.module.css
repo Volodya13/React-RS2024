@@ -15,7 +15,7 @@
   position: relative;
   flex-flow: wrap;
   height: fit-content;
-  max-width: 460px;
+  max-width: 420px;
   .search-bar__input {
     max-width: 60%;
   }
