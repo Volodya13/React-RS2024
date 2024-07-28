@@ -1,0 +1,14 @@
+.search-component {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  max-width: fit-content;
+  grid-area: 1 / 1 / 7 / 3;
+  gap: 7px;
+}
+.details-section {
+  display: flex;
+  justify-content: center;
+  grid-area: 2 / 3 / 5 / 9;
+}
