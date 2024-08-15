@@ -1,0 +1,22 @@
+.switcher {
+  display: flex;
+  align-items: center;
+}
+
+.switch {
+  display: none;
+}
+
+.switch + .label {
+  position: relative;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #ddd;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+}
+
+.switch:checked + .label {
+  background-color: #333;
+  color: #fff;
+}

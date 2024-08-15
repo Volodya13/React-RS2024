@@ -1,0 +1,13 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  & .pagination-button {
+    background-color: transparent;
+    padding: 0;
+    font-size: 2em;
+    border: unset;
+  }
+}

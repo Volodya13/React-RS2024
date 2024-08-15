@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import './NotFound.css';
+import styles from './NotFound.module.css';
 
 export function NotFound() {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ export function NotFound() {
   };
 
   return (
-    <div className="not-found">
+    <div className={styles['not-found']}>
       <h1>404</h1>
       <p>Ooops.. Maybe it was an another universe or galaxy</p>
       <button onClick={handleBack}>Go back</button>
