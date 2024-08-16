@@ -7,6 +7,7 @@
   --light-color: #f8f9fa;
   --hover-color: #0056b3;
   --focus-color: #0056b3;
+  --error-color: #dc3545;
   --border-radius: 0.25rem;
   --title-size: 1.5rem;
   --text-size: 1rem;
@@ -84,9 +85,11 @@ button:focus-visible {
   height: 100dvh;
 }
 
-header {
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
+section {
+  padding: 1rem;
   width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
