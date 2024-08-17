@@ -49,7 +49,7 @@ function Form() {
         label={'Age'}
         id={'age'}
         type={FieldTypes.number}
-        placeholder={'Age'}
+        placeholder={'Select your age'}
         register={register}
         error={errors.age?.message}
         required
@@ -58,7 +58,7 @@ function Form() {
         label={'Email'}
         id={'email'}
         type={FieldTypes.email}
-        placeholder={'Email'}
+        placeholder={'Enter your email'}
         register={register}
         error={errors.email?.message}
         required
@@ -67,7 +67,7 @@ function Form() {
         label={'Password'}
         id={'password'}
         type={FieldTypes.password}
-        placeholder={'Password'}
+        placeholder={'Enter password'}
         register={register}
         error={errors.password?.message}
         required
