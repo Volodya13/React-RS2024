@@ -1,7 +1,15 @@
 import styles from './Form.module.css';
 import React, { useRef } from 'react';
+import {useDispatch} from "react-redux";
+import {handleImageUpload} from "../../utils/fileUtils.ts";
+import {FormsData} from "../../interfaces/interfaces.tsx";
+import {saveUncontrolledFormData} from "../../store/reducers/formSlice.tsx";
+import {useNavigate} from "react-router-dom";
 
 function UncontrolledForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const nameRef = useRef<HTMLInputElement>(null);
   const ageRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -11,20 +19,35 @@ function UncontrolledForm() {
   const fileRef = useRef<HTMLInputElement>(null);
   const termsRef = useRef<HTMLInputElement>(null);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = {
-      name: nameRef.current?.value,
-      age: ageRef.current?.value,
-      email: emailRef.current?.value,
-      password: passwordRef.current?.value,
-      confirmPassword: confirmPasswordRef.current?.value,
-      gender: genderRef.current?.value,
-      profilePicture: fileRef.current?.files,
-      termsAndConditions: termsRef.current?.checked,
+
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
+
+    const data: FormsData = {
+      name: formData.get('name') as string,
+      age: Number(formData.get('age')),
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+      confirmPassword: formData.get('confirmPassword') as string,
+      gender: formData.get('gender') as string,
+      profilePicture: formData.get('profilePicture') as unknown as FileList,
+      termsAndConditions: formData.get('termsAndConditions') === 'on',
     };
 
-    console.log(formData);
+    // Проверка наличия загруженного файла
+    if (data.profilePicture && data.profilePicture.length > 0) {
+      const imageFile = data.profilePicture[0];
+      if (imageFile) {
+        const base64String = await handleImageUpload(imageFile);
+        data.profilePicture = base64String as unknown as FileList;
+      }
+    }
+
+    dispatch(saveUncontrolledFormData(data));
+
+    navigate('/');
   };
 
   return (

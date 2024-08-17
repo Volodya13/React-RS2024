@@ -4,8 +4,15 @@ import styles from './Form.module.css';
 import FormField from '../../utils/ui/form-field/FormField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from '../../utils/schema.ts';
+import { useDispatch } from 'react-redux';
+import { handleImageUpload } from '../../utils/fileUtils.ts';
+import { saveControlledFormData } from '../../store/reducers/formSlice.tsx';
+import {useNavigate} from "react-router-dom";
 
 function Form() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -14,8 +21,17 @@ function Form() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: FormsData) => {
-    console.log(data);
+  const onSubmit = async (data: FormsData) => {
+    const imgFile = data.profilePicture[0];
+
+    if (imgFile) {
+      const base64String = await handleImageUpload(imgFile);
+      data.profilePicture = base64String as unknown as FileList;
+    }
+
+    dispatch(saveControlledFormData(data));
+
+    navigate('/');
   };
 
   return (

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import Logo from '../../assets/img/logo.png';
 
 const nav = [
-  { to: '/uncontrolled', text: 'Uncontrolled' },
   { to: '/controlled', text: 'Controlled' },
+  { to: '/uncontrolled', text: 'Uncontrolled' },
 ];
 
 function Header() {
