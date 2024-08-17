@@ -17,4 +17,15 @@
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 4px;
+  }
+
+  &:checked::before {
+    background-color: var(--primary-color);
+  }
 }
