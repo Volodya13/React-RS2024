@@ -1,4 +1,4 @@
-import Form from '../components/form/Form.tsx';
+import Form from '../../components/form/Form.tsx';
 
 function Controlled() {
   return (

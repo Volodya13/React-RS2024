@@ -1,4 +1,4 @@
-import { IFormFieldProps } from '../../../interfaces/IFormFieldProps.tsx';
+import { FormsDataField } from '../../../interfaces/interfaces.tsx';
 import { FC } from 'react';
 import styles from './FormField.module.css';
 import Label from '../label/Label.tsx';
@@ -6,7 +6,7 @@ import Radio from '../radio/Radio.tsx';
 import Checkbox from '../checkbox/Checkbox.tsx';
 import Input from '../input/Input.tsx';
 
-const FormField: FC<IFormFieldProps> = ({
+const FormField: FC<FormsDataField> = ({
   label,
   id,
   type,

@@ -1,4 +1,19 @@
 .formField {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  position: relative;
+  p {
+    position: absolute;
+    right: 5px;
+    bottom: 7px;
+    font-size: 12px;
+    border-radius: var(--border-radius);
+    margin: 0;
+    padding: 5px 8px;
+    background-color: var(--error-color);
+    color: var(--light-color);
+  }
 }

@@ -1,8 +1,8 @@
 import styles from './Header.module.css';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/img/logo.png';
 
-const navs = [
+const nav = [
   { to: '/uncontrolled', text: 'Uncontrolled' },
   { to: '/controlled', text: 'Controlled' },
 ];
@@ -13,12 +13,12 @@ function Header() {
       <Link to={'/'} className={styles.logo}>
         <img src={Logo} alt="Logo" />
       </Link>
-      <nav className={styles.Nav}>
-        <ul className={styles.List}>
-          {navs.map((nav) => (
-            <li key={nav.to}>
-              <Link className={styles.Link} to={nav.to}>
-                {nav.text}
+      <nav className={styles.nav}>
+        <ul className={styles.list}>
+          {nav.map(({ to, text }) => (
+            <li key={to}>
+              <Link className={styles.link} to={to}>
+                {text}
               </Link>
             </li>
           ))}
