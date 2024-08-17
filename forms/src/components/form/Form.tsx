@@ -1,18 +1,20 @@
 import { useForm } from 'react-hook-form';
-import { IFormsData } from '../../interfaces/IFormsData';
+import { FieldTypes, FormsData } from '../../interfaces/interfaces';
 import styles from './Form.module.css';
-import FormField from '../../utils/ui/form-field/FormField.tsx';
-import Label from '../../utils/ui/label/Label.tsx';
-import Radio from '../../utils/ui/radio/Radio.tsx';
+import FormField from '../../utils/ui/form-field/FormField';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { schema } from '../../utils/schema.ts';
 
 function Form() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormsData>();
+  } = useForm<FormsData>({
+    resolver: yupResolver(schema),
+  });
 
-  const onSubmit = (data: IFormsData) => {
+  const onSubmit = (data: FormsData) => {
     console.log(data);
   };
 
@@ -21,7 +23,7 @@ function Form() {
       <FormField
         label={'Name'}
         id={'name'}
-        type={'text'}
+        type={FieldTypes.text}
         placeholder={'Enter your name'}
         register={register}
         error={errors.name?.message}
@@ -30,7 +32,7 @@ function Form() {
       <FormField
         label={'Age'}
         id={'age'}
-        type={'number'}
+        type={FieldTypes.number}
         placeholder={'Age'}
         register={register}
         error={errors.age?.message}
@@ -39,7 +41,7 @@ function Form() {
       <FormField
         label={'Email'}
         id={'email'}
-        type={'email'}
+        type={FieldTypes.email}
         placeholder={'Email'}
         register={register}
         error={errors.email?.message}
@@ -48,7 +50,7 @@ function Form() {
       <FormField
         label={'Password'}
         id={'password'}
-        type={'password'}
+        type={FieldTypes.password}
         placeholder={'Password'}
         register={register}
         error={errors.password?.message}
@@ -57,49 +59,39 @@ function Form() {
       <FormField
         label={'Confirm Password'}
         id={'confirmPassword'}
-        type={'password'}
+        type={FieldTypes.password}
         placeholder={'Confirm Password'}
         register={register}
         error={errors.confirmPassword?.message}
         required
       />
       <div className={styles.gender}>
-        <label>Gender</label>
-        <div>
-          <Label>
-            <Radio
-              label={undefined}
-              type="radio"
-              value="male"
-              {...register('gender', { required: 'Please select your gender' })}
-            />
-            Male
-          </Label>
-          <Label>
-            <Radio
-              label={undefined}
-              type="radio"
-              value="female"
-              {...register('gender', { required: 'Please select your gender' })}
-            />
-            Female
-          </Label>
-          <Label>
-            <Radio
-              label={undefined}
-              type="radio"
-              value="other"
-              {...register('gender', { required: 'Please select your gender' })}
-            />
-            Other
-          </Label>
-        </div>
+        <label htmlFor={'gender'}>Gender</label>
+        <select
+          id="gender"
+          {...register('gender')}
+          aria-errormessage={errors.gender?.message}
+          required
+        >
+          <option value="">Select your gender</option>
+          <option value={'Male'}>Male</option>
+          <option value={'Female'}>Female</option>
+          <option value={'Other'}>Other</option>
+        </select>
+
         {errors.gender && <p>{errors.gender.message}</p>}
       </div>
       <FormField
+        label="Profile Picture"
+        id={'profilePicture'}
+        type={FieldTypes.file}
+        register={register}
+        error={errors.profilePicture?.message}
+      />
+      <FormField
         label={'I accept the Terms and Conditions'}
         id={'termsAndConditions'}
-        type={'checkbox'}
+        type={FieldTypes.checkbox}
         register={register}
         error={errors.termsAndConditions?.message}
         required

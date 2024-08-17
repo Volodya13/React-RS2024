@@ -7,17 +7,52 @@
   height: fit-content;
   max-width: 550px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 8px 20px;
   border-radius: var(--border-radius);
   box-shadow: 0 2px 3px var(--focus-color);
   background-color: var(--light-color);
+
+  & > div:nth-child(8) {
+    display: flex;
+    flex-flow: row-reverse;
+    gap: 10px;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .gender {
   display: flex;
+  flex-flow: column;
+  align-items: start;
   gap: 10px;
-  padding: 20px;
   align-self: start;
+  position: relative;
+  margin-bottom: 5px;
+
+  select {
+    padding: 12px 14px;
+    border-radius: 5px;
+    border: 1px solid #eaeaea;
+    background-color: #6c757d;
+    font-size: 14px;
+    color: var(--light-color);
+    width: 100%;
+    cursor: pointer;
+  }
+
+  p {
+    position: absolute;
+    right: -445px;
+    top: 35px;
+    font-size: 12px;
+    border-radius: var(--border-radius);
+    margin: 0;
+    padding: 5px 8px;
+    background-color: var(--error-color);
+    color: var(--light-color);
+  }
 }
 
 .gender > div {
@@ -25,10 +60,23 @@
   gap: 10px;
 }
 
-.termsAndConditions {
+.formField {
+  width: 100%;
+  margin-bottom: 5px;
   display: flex;
-  gap: 10px;
-  padding: 20px;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: start;
+  position: relative;
+
+  p {
+    position: absolute;
+    right: 5px;
+    bottom: 7px;
+    font-size: 12px;
+    border-radius: var(--border-radius);
+    margin: 0;
+    padding: 5px 8px;
+    background-color: var(--error-color);
+    color: var(--light-color);
+  }
 }
