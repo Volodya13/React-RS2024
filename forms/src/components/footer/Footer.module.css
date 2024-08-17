@@ -1,0 +1,14 @@
+.Footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 7px;
+  gap: 10px;
+  border-top: 1px solid var(--secondary-color);
+
+  & > a {
+    width: 45px;
+    height: fit-content;
+  }
+}
