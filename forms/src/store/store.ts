@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-
+import formReducer from './reducers/formSlice';
 export const setupStore = configureStore({
   reducer: {
-    // Add reducers here
+    form: formReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof setupStore.getState>;
