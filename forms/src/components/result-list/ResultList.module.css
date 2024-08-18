@@ -9,6 +9,7 @@
   overflow-x: hidden;
   z-index: 1;
   background-color: var(--primary-color);
+  max-height: 615px;
 
   h2 {
     position: absolute;

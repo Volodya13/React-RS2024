@@ -5,9 +5,9 @@ import { saveUncontrolledFormData } from '../../store/reducers/formSlice';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../utils/ui/input/Input';
 import styles from './Form.module.css';
-import { validateUncontrolledForm } from '../../utils/customSchema';
+import { validateUncontrolledForm } from '../../utils/fileUtils';
 import { handleImageUpload } from '../../utils/fileUtils';
-import PasswordStrength from '../../utils/ui/password-strength/PasswordStrength.tsx';
+import PasswordStrength from '../../utils/ui/password-strength/PasswordStrength';
 
 function UncontrolledForm() {
   const dispatch = useDispatch();
@@ -55,18 +55,15 @@ function UncontrolledForm() {
       termsAndConditions: termsRef.current?.checked || false,
     };
 
-    const validationErrors = validateUncontrolledForm(data);
+    const validationErrors = await validateUncontrolledForm(data);
 
-    const hasErrors = Object.values(validationErrors).some(error => error !== undefined);
+    const hasErrors = Object.values(validationErrors).some((error) => error !== undefined);
 
     if (!hasErrors) {
-      console.log('Saving data to Redux:', data);
       dispatch(saveUncontrolledFormData(data));
-      console.log('Navigating to home page');
       navigate('/');
     } else {
-      console.log('Validation errors:', validationErrors);
-      setErrors(validationErrors);
+      setErrors(validationErrors as unknown as Record<keyof FormsData, string | undefined>);
     }
   };
 

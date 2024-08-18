@@ -3,14 +3,14 @@ import { FieldTypes, FormsData } from '../../interfaces/interfaces';
 import styles from './Form.module.css';
 import FormField from '../../utils/ui/form-field/FormField';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { schema } from '../../utils/schema.ts';
+import { schema } from '../../utils/schema';
 import { useDispatch } from 'react-redux';
-import { saveControlledFormData } from '../../store/reducers/formSlice.tsx';
+import { saveControlledFormData } from '../../store/reducers/formSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import PasswordStrength from '../../utils/ui/password-strength/PasswordStrength.tsx';
+import PasswordStrength from '../../utils/ui/password-strength/PasswordStrength';
 import Input from '../../utils/ui/input/Input.tsx';
-import { handleImageUpload } from '../../utils/fileUtils.ts';
+import { handleImageUpload } from '../../utils/fileUtils';
 
 function Form() {
   const dispatch = useDispatch();
@@ -27,23 +27,26 @@ function Form() {
   });
 
   const onSubmit = async (data: FormsData) => {
-    if ('string' !== typeof data.profilePicture && data.profilePicture) {
-      const imgFile: FormsData = data.profilePicture[0];
+    if (typeof data.profilePicture !== 'string' && data.profilePicture instanceof FileList) {
+      const imgFile = data.profilePicture[0];
+      let base64String = null;
 
-      if (imgFile instanceof File) {
+      if (imgFile) {
         try {
-          const base64String = await handleImageUpload(imgFile);
+          base64String = await handleImageUpload(imgFile);
           data.profilePicture = base64String;
         } catch (error) {
           console.error('Error uploading image:', error);
           data.profilePicture = null;
         }
       } else {
-        console.error('Profile picture is not a valid File object.');
         data.profilePicture = null;
       }
+    } else {
+      console.log('profilePicture is either a string or not present');
     }
 
+    console.log('Final data:', data);
     dispatch(saveControlledFormData(data));
     navigate('/');
   };

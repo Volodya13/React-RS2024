@@ -1,6 +1,11 @@
+import { schema } from './schema.ts';
+import { FormsData } from '../interfaces/interfaces.tsx';
+import { ValidationError } from 'yup';
+
 export const handleImageUpload = (file: Blob): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
+
     reader.onloadend = () => {
       if (reader.result) {
         resolve(reader.result as string);
@@ -8,7 +13,16 @@ export const handleImageUpload = (file: Blob): Promise<string> => {
         reject('Failed to read file');
       }
     };
-    reader.readAsDataURL(file);
+
+    reader.onerror = () => {
+      reject('Error occurred while reading file');
+    };
+
+    try {
+      reader.readAsDataURL(file);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 
@@ -32,4 +46,31 @@ export const calculatePasswordStrength = (password: string): number => {
   if (specialCharCount > 1) score += 1;
 
   return score;
+};
+
+export const validateUncontrolledForm = async (data: FormsData) => {
+  try {
+    await schema.validate(data, { abortEarly: false });
+    return {};
+  } catch (err) {
+    const validationError = err as ValidationError;
+    const errors: Record<keyof FormsData, string | undefined> = {
+      name: undefined,
+      age: undefined,
+      email: undefined,
+      password: undefined,
+      confirmPassword: undefined,
+      gender: undefined,
+      profilePicture: undefined,
+      termsAndConditions: undefined,
+    };
+
+    validationError.inner.forEach((error) => {
+      if (error.path) {
+        errors[error.path as keyof FormsData] = error.message;
+      }
+    });
+
+    return errors;
+  }
 };
