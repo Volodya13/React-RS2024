@@ -1,0 +1,8 @@
+.label {
+  font-size: 15px;
+  color: var(--text-color);
+}
+
+.required {
+  color: var(--error-color);
+}

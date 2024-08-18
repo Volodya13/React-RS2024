@@ -1,0 +1,70 @@
+.results {
+  flex: 1;
+  height: 80%;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 5px 0 var(--secondary-color);
+  position: relative;
+  padding-top: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 1;
+  background-color: var(--primary-color);
+  max-height: 615px;
+
+  h2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 5;
+    width: 97%;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    color: var(--light-color);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 5px;
+      right: 0;
+      height: 1px;
+      background-color: var(--light-color);
+    }
+  }
+}
+
+.resultList {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: stretch;
+  gap: 10px;
+  height: fit-content;
+}
+
+.listItem {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: var(--light-color);
+  border-radius: var(--border-radius);
+  width: 100%;
+}
+
+.profilePicture {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: var(--border-radius);
+}
+
+.description {
+  color: var(--primary-color);
+}
