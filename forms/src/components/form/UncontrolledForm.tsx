@@ -1,14 +1,27 @@
+import React, { useRef, useState } from 'react';
+import { useDispatch } from "react-redux";
+import { FormsData } from "../../interfaces/interfaces";
+import { saveUncontrolledFormData } from "../../store/reducers/formSlice";
+import { useNavigate } from "react-router-dom";
+import Input from "../../utils/ui/input/Input";
 import styles from './Form.module.css';
-import React, { useRef } from 'react';
-import {useDispatch} from "react-redux";
-import {handleImageUpload} from "../../utils/fileUtils.ts";
-import {FormsData} from "../../interfaces/interfaces.tsx";
-import {saveUncontrolledFormData} from "../../store/reducers/formSlice.tsx";
-import {useNavigate} from "react-router-dom";
+import { validateUncontrolledForm } from "../../utils/customSchema";
+import {handleImageUpload} from "../../utils/fileUtils";
 
 function UncontrolledForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [errors, setErrors] = useState<Record<keyof FormsData, string | undefined>>({
+    name: undefined,
+    age: undefined,
+    email: undefined,
+    password: undefined,
+    confirmPassword: undefined,
+    gender: undefined,
+    profilePicture: undefined,
+    termsAndConditions: undefined,
+  });
 
   const nameRef = useRef<HTMLInputElement>(null);
   const ageRef = useRef<HTMLInputElement>(null);
@@ -22,55 +35,88 @@ function UncontrolledForm() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formElement = e.currentTarget;
-    const formData = new FormData(formElement);
-
-    const data: FormsData = {
-      name: formData.get('name') as string,
-      age: Number(formData.get('age')),
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-      confirmPassword: formData.get('confirmPassword') as string,
-      gender: formData.get('gender') as string,
-      profilePicture: formData.get('profilePicture') as unknown as FileList,
-      termsAndConditions: formData.get('termsAndConditions') === 'on',
-    };
-
-    // Проверка наличия загруженного файла
-    if (data.profilePicture && data.profilePicture.length > 0) {
-      const imageFile = data.profilePicture[0];
-      if (imageFile) {
-        const base64String = await handleImageUpload(imageFile);
-        data.profilePicture = base64String as unknown as FileList;
-      }
+    let base64String = null;
+    if (fileRef.current?.files?.length) {
+      const imageFile = fileRef.current.files[0];
+      base64String = await handleImageUpload(imageFile);
     }
 
-    dispatch(saveUncontrolledFormData(data));
+    const data: FormsData = {
+      name: nameRef.current?.value || "",
+      age: Number(ageRef.current?.value) || 0,
+      email: emailRef.current?.value || "",
+      password: passwordRef.current?.value || "",
+      confirmPassword: confirmPasswordRef.current?.value || "",
+      gender: genderRef.current?.value || "",
+      profilePicture: base64String,
+      termsAndConditions: termsRef.current?.checked || false,
+    };
 
-    navigate('/');
+    const validationErrors = validateUncontrolledForm(data);
+    if (Object.keys(validationErrors).length === 0) {
+      dispatch(saveUncontrolledFormData(data));
+      navigate('/');
+    } else {
+      setErrors(validationErrors);
+    }
   };
 
   return (
     <form className={styles.Form} onSubmit={onSubmit}>
       <div className={styles.formField}>
         <label htmlFor="name">Name</label>
-        <input id="name" type="text" ref={nameRef} />
+        <Input
+          id="name"
+          type="text"
+          ref={nameRef}
+          required
+          placeholder="Enter your name"
+        />
+        {errors.name && <p className={styles.error}>{errors.name}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="age">Age</label>
-        <input id="age" type="number" ref={ageRef} />
+        <Input
+          id="age"
+          type="number"
+          ref={ageRef}
+          required
+          placeholder="Select your age"
+        />
+        {errors.age && <p className={styles.error}>{errors.age}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" ref={emailRef} />
+        <Input
+          id="email"
+          type="email"
+          ref={emailRef}
+          required
+          placeholder="Enter your email"
+        />
+        {errors.email && <p className={styles.error}>{errors.email}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="password">Password</label>
-        <input id="password" type="password" ref={passwordRef} />
+        <Input
+          id="password"
+          type="password"
+          ref={passwordRef}
+          required
+          placeholder="Enter password"
+        />
+        {errors.password && <p className={styles.error}>{errors.password}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="confirmPassword">Confirm Password</label>
-        <input id="confirmPassword" type="password" ref={confirmPasswordRef} />
+        <Input
+          id="confirmPassword"
+          type="password"
+          ref={confirmPasswordRef}
+          required
+          placeholder="Confirm Password"
+        />
+        {errors.confirmPassword && <p className={styles.error}>{errors.confirmPassword}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="gender">Gender</label>
@@ -80,15 +126,28 @@ function UncontrolledForm() {
           <option value="female">Female</option>
           <option value="other">Other</option>
         </select>
+        {errors.gender && <p className={styles.error}>{errors.gender}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="profilePicture">Profile Picture</label>
-        <input id="profilePicture" type="file" ref={fileRef} />
+        <Input
+          id="profilePicture"
+          type="file"
+          ref={fileRef}
+        />
+        {errors.profilePicture && <p className={styles.error}>{errors.profilePicture}</p>}
       </div>
       <div className={styles.formField}>
         <label>
-          <input type="checkbox" ref={termsRef} />I accept the Terms and Conditions
+          <Input
+            id="termsAndConditions"
+            name="termsAndConditions"
+            type="checkbox"
+            ref={termsRef}
+          />
+          I accept the Terms and Conditions
         </label>
+        {errors.termsAndConditions && <p className={styles.error}>{errors.termsAndConditions}</p>}
       </div>
       <button type="submit">Submit</button>
     </form>

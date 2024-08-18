@@ -1,20 +1,39 @@
 .results {
   flex: 1;
   height: 80%;
-  /*border: 1px solid var(--primary-color);*/
   border-radius: var(--border-radius);
   box-shadow: 0 0 5px 0 var(--secondary-color);
+  position: relative;
+  padding-top: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 1;
+  background-color: var(--primary-color);
 
   h2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 5;
+    width: 97%;
     text-align: center;
     margin: 0;
     padding: 10px;
-    background-color: var(--primary-color);
     color: var(--light-color);
     border-top-left-radius: var(--border-radius);
     border-top-right-radius: var(--border-radius);
-  }
 
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 5px;
+      right: 0;
+      height: 1px;
+      background-color: var(--light-color);
+    }
+  }
 }
 
 .resultList {
@@ -24,7 +43,7 @@
   align-items: start;
   justify-content: stretch;
   gap: 10px;
-  height: 100%;
+  height: fit-content;
 }
 
 .listItem {

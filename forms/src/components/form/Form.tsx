@@ -7,7 +7,7 @@ import { schema } from '../../utils/schema.ts';
 import { useDispatch } from 'react-redux';
 import { handleImageUpload } from '../../utils/fileUtils.ts';
 import { saveControlledFormData } from '../../store/reducers/formSlice.tsx';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 function Form() {
   const dispatch = useDispatch();
@@ -18,19 +18,26 @@ function Form() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormsData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver<FormsData>(schema),
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: FormsData) => {
-    const imgFile = data.profilePicture[0];
+    if (data.profilePicture) {
+      const imgFile = data.profilePicture[0] as unknown as string | File;
 
-    if (imgFile) {
-      const base64String = await handleImageUpload(imgFile);
-      data.profilePicture = base64String as unknown as FileList;
+      if (imgFile instanceof File) {
+        const base64String = await handleImageUpload(imgFile);
+        data.profilePicture = base64String;
+      } else {
+        console.error('Profile picture is not a valid File object or no file provided.');
+        data.profilePicture = null;
+      }
+    } else {
+      data.profilePicture = null;
     }
 
     dispatch(saveControlledFormData(data));
-
     navigate('/');
   };
 

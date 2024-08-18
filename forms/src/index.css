@@ -7,7 +7,7 @@
   --light-color: #f8f9fa;
   --hover-color: #0056b3;
   --focus-color: #0056b3;
-  --error-color: #dc3545;
+  --error-color: rgba(220, 53, 69, 0.79);
   --border-radius: 0.25rem;
   --title-size: 1.5rem;
   --text-size: 1rem;
@@ -21,6 +21,47 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--light-color);
+  border: 20px none var(--light-color);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-color);
+  border: 0 none #ffffff;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #ffffff;
+}
+
+::-webkit-scrollbar-track:active {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 a {

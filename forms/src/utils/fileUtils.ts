@@ -1,14 +1,13 @@
-export const handleImageUpload = (file: File): Promise<string | undefined> => {
+export const handleImageUpload = (file: Blob): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       if (reader.result) {
-        resolve(reader.result.toString());
+        resolve(reader.result as string);
       } else {
-        reject('Error reading file');
+        reject('Failed to read file');
       }
     };
-    reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 };

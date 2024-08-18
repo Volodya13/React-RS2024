@@ -1,4 +1,4 @@
-import {FormsData} from "../../interfaces/interfaces.tsx";
+import { FormsData } from '../../interfaces/interfaces.tsx';
 import styles from './ResultList.module.css';
 
 interface ResultListProps {
@@ -11,10 +11,7 @@ function ResultList({ data, title }: ResultListProps) {
     <div className={styles.results}>
       <h2>{title}</h2>
       {data.map((item, index) => (
-        <div
-          className={styles.resultList}
-          key={index}
-        >
+        <div className={styles.resultList} key={index}>
           <div className={styles.listItem}>
             Name:
             <span className={styles.description}>{item.name}</span>
@@ -37,13 +34,14 @@ function ResultList({ data, title }: ResultListProps) {
               <img
                 className={styles.profilePicture}
                 src={item.profilePicture as unknown as string}
-                alt="Profile" />
+                alt="Profile"
+              />
             </div>
           )}
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export default ResultList;

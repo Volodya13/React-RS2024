@@ -23,15 +23,7 @@ export const schema = yup.object().shape({
     .required('Please confirm your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
   gender: yup.string().required('Please select your gender'),
-  profilePicture: yup
-    .mixed<FileList>()
-    .required('Please upload your profile picture')
-    .test('fileSize', 'File too large', (value) => {
-      return value && value.length > 0 && value[0].size <= 2000000; // Пример: ограничение на размер файла 2MB
-    })
-    .test('fileType', 'Unsupported file format', (value) => {
-      return value && value.length > 0 && ['image/jpeg', 'image/png'].includes(value[0].type); // Пример: поддерживаемые форматы
-    }),
+  profilePicture: yup.string().nullable().required(),
   termsAndConditions: yup
     .boolean()
     .oneOf([true], 'Please accept the terms and conditions')

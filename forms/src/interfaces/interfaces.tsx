@@ -7,7 +7,7 @@ export interface FormsData {
   password: string;
   confirmPassword: string;
   gender: string;
-  profilePicture: FileList;
+  profilePicture: string | null;
   termsAndConditions: boolean;
 }
 
