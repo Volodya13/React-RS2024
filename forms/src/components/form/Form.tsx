@@ -5,13 +5,17 @@ import FormField from '../../utils/ui/form-field/FormField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from '../../utils/schema.ts';
 import { useDispatch } from 'react-redux';
-import { handleImageUpload } from '../../utils/fileUtils.ts';
 import { saveControlledFormData } from '../../store/reducers/formSlice.tsx';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import PasswordStrength from '../../utils/ui/password-strength/PasswordStrength.tsx';
+import Input from '../../utils/ui/input/Input.tsx';
+import { handleImageUpload } from '../../utils/fileUtils.ts';
 
 function Form() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [password, setPassword] = useState('');
 
   const {
     register,
@@ -23,18 +27,21 @@ function Form() {
   });
 
   const onSubmit = async (data: FormsData) => {
-    if (data.profilePicture) {
-      const imgFile = data.profilePicture[0] as unknown as string | File;
+    if ('string' !== typeof data.profilePicture && data.profilePicture) {
+      const imgFile: FormsData = data.profilePicture[0];
 
       if (imgFile instanceof File) {
-        const base64String = await handleImageUpload(imgFile);
-        data.profilePicture = base64String;
+        try {
+          const base64String = await handleImageUpload(imgFile);
+          data.profilePicture = base64String;
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          data.profilePicture = null;
+        }
       } else {
-        console.error('Profile picture is not a valid File object or no file provided.');
+        console.error('Profile picture is not a valid File object.');
         data.profilePicture = null;
       }
-    } else {
-      data.profilePicture = null;
     }
 
     dispatch(saveControlledFormData(data));
@@ -70,15 +77,18 @@ function Form() {
         error={errors.email?.message}
         required
       />
-      <FormField
-        label={'Password'}
-        id={'password'}
-        type={FieldTypes.password}
-        placeholder={'Enter password'}
-        register={register}
-        error={errors.password?.message}
-        required
-      />
+      <div className={styles.formField}>
+        <label htmlFor="password">Password</label>
+        <Input
+          id="password"
+          type="password"
+          {...register('password', { required: true })}
+          placeholder="Enter password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <PasswordStrength password={password} />
+        {errors.password && <p className={styles.error}>{errors.password.message}</p>}
+      </div>
       <FormField
         label={'Confirm Password'}
         id={'confirmPassword'}

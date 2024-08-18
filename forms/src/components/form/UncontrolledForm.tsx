@@ -1,16 +1,19 @@
 import React, { useRef, useState } from 'react';
-import { useDispatch } from "react-redux";
-import { FormsData } from "../../interfaces/interfaces";
-import { saveUncontrolledFormData } from "../../store/reducers/formSlice";
-import { useNavigate } from "react-router-dom";
-import Input from "../../utils/ui/input/Input";
+import { useDispatch } from 'react-redux';
+import { FormsData } from '../../interfaces/interfaces';
+import { saveUncontrolledFormData } from '../../store/reducers/formSlice';
+import { useNavigate } from 'react-router-dom';
+import Input from '../../utils/ui/input/Input';
 import styles from './Form.module.css';
-import { validateUncontrolledForm } from "../../utils/customSchema";
-import {handleImageUpload} from "../../utils/fileUtils";
+import { validateUncontrolledForm } from '../../utils/customSchema';
+import { handleImageUpload } from '../../utils/fileUtils';
+import PasswordStrength from '../../utils/ui/password-strength/PasswordStrength.tsx';
 
 function UncontrolledForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [password, setPassword] = useState('');
 
   const [errors, setErrors] = useState<Record<keyof FormsData, string | undefined>>({
     name: undefined,
@@ -42,21 +45,27 @@ function UncontrolledForm() {
     }
 
     const data: FormsData = {
-      name: nameRef.current?.value || "",
+      name: nameRef.current?.value || '',
       age: Number(ageRef.current?.value) || 0,
-      email: emailRef.current?.value || "",
-      password: passwordRef.current?.value || "",
-      confirmPassword: confirmPasswordRef.current?.value || "",
-      gender: genderRef.current?.value || "",
+      email: emailRef.current?.value || '',
+      password: passwordRef.current?.value || '',
+      confirmPassword: confirmPasswordRef.current?.value || '',
+      gender: genderRef.current?.value || '',
       profilePicture: base64String,
       termsAndConditions: termsRef.current?.checked || false,
     };
 
     const validationErrors = validateUncontrolledForm(data);
-    if (Object.keys(validationErrors).length === 0) {
+
+    const hasErrors = Object.values(validationErrors).some(error => error !== undefined);
+
+    if (!hasErrors) {
+      console.log('Saving data to Redux:', data);
       dispatch(saveUncontrolledFormData(data));
+      console.log('Navigating to home page');
       navigate('/');
     } else {
+      console.log('Validation errors:', validationErrors);
       setErrors(validationErrors);
     }
   };
@@ -65,35 +74,17 @@ function UncontrolledForm() {
     <form className={styles.Form} onSubmit={onSubmit}>
       <div className={styles.formField}>
         <label htmlFor="name">Name</label>
-        <Input
-          id="name"
-          type="text"
-          ref={nameRef}
-          required
-          placeholder="Enter your name"
-        />
+        <Input id="name" type="text" ref={nameRef} required placeholder="Enter your name" />
         {errors.name && <p className={styles.error}>{errors.name}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="age">Age</label>
-        <Input
-          id="age"
-          type="number"
-          ref={ageRef}
-          required
-          placeholder="Select your age"
-        />
+        <Input id="age" type="number" ref={ageRef} required placeholder="Select your age" />
         {errors.age && <p className={styles.error}>{errors.age}</p>}
       </div>
       <div className={styles.formField}>
         <label htmlFor="email">Email</label>
-        <Input
-          id="email"
-          type="email"
-          ref={emailRef}
-          required
-          placeholder="Enter your email"
-        />
+        <Input id="email" type="email" ref={emailRef} required placeholder="Enter your email" />
         {errors.email && <p className={styles.error}>{errors.email}</p>}
       </div>
       <div className={styles.formField}>
@@ -104,7 +95,9 @@ function UncontrolledForm() {
           ref={passwordRef}
           required
           placeholder="Enter password"
+          onChange={(e) => setPassword(e.target.value)}
         />
+        <PasswordStrength password={password} />
         {errors.password && <p className={styles.error}>{errors.password}</p>}
       </div>
       <div className={styles.formField}>
@@ -130,21 +123,12 @@ function UncontrolledForm() {
       </div>
       <div className={styles.formField}>
         <label htmlFor="profilePicture">Profile Picture</label>
-        <Input
-          id="profilePicture"
-          type="file"
-          ref={fileRef}
-        />
+        <Input id="profilePicture" type="file" ref={fileRef} />
         {errors.profilePicture && <p className={styles.error}>{errors.profilePicture}</p>}
       </div>
       <div className={styles.formField}>
         <label>
-          <Input
-            id="termsAndConditions"
-            name="termsAndConditions"
-            type="checkbox"
-            ref={termsRef}
-          />
+          <Input id="termsAndConditions" name="termsAndConditions" type="checkbox" ref={termsRef} />
           I accept the Terms and Conditions
         </label>
         {errors.termsAndConditions && <p className={styles.error}>{errors.termsAndConditions}</p>}
