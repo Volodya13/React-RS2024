@@ -1,6 +1,6 @@
 import { schema } from './schema.ts';
 import { FormsData } from '../interfaces/interfaces.tsx';
-import { ValidationError } from 'yup';
+import * as yup from 'yup';
 
 export const handleImageUpload = (file: Blob): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -52,8 +52,7 @@ export const validateUncontrolledForm = async (data: FormsData) => {
   try {
     await schema.validate(data, { abortEarly: false });
     return {};
-  } catch (err) {
-    const validationError = err as ValidationError;
+  } catch (validationError) {
     const errors: Record<keyof FormsData, string | undefined> = {
       name: undefined,
       age: undefined,
@@ -65,7 +64,7 @@ export const validateUncontrolledForm = async (data: FormsData) => {
       termsAndConditions: undefined,
     };
 
-    validationError.inner.forEach((error) => {
+    (validationError as yup.ValidationError).inner.forEach((error: yup.ValidationError) => {
       if (error.path) {
         errors[error.path as keyof FormsData] = error.message;
       }

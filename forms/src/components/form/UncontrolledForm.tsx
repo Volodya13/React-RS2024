@@ -51,7 +51,7 @@ function UncontrolledForm() {
       password: passwordRef.current?.value || '',
       confirmPassword: confirmPasswordRef.current?.value || '',
       gender: genderRef.current?.value || '',
-      profilePicture: base64String,
+      profilePicture: base64String as unknown as FileList,
       termsAndConditions: termsRef.current?.checked || false,
     };
 
@@ -63,7 +63,7 @@ function UncontrolledForm() {
       dispatch(saveUncontrolledFormData(data));
       navigate('/');
     } else {
-      setErrors(validationErrors as unknown as Record<keyof FormsData, string | undefined>);
+      setErrors(validationErrors as Record<keyof FormsData, string | undefined>);
     }
   };
 

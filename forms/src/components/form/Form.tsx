@@ -27,26 +27,20 @@ function Form() {
   });
 
   const onSubmit = async (data: FormsData) => {
-    if (typeof data.profilePicture !== 'string' && data.profilePicture instanceof FileList) {
+    if (data.profilePicture && data.profilePicture instanceof FileList) {
       const imgFile = data.profilePicture[0];
-      let base64String = null;
-
       if (imgFile) {
         try {
-          base64String = await handleImageUpload(imgFile);
-          data.profilePicture = base64String;
+          const base64String = await handleImageUpload(imgFile);
+          data.profilePicture = base64String as unknown as FileList;
         } catch (error) {
           console.error('Error uploading image:', error);
-          data.profilePicture = null;
         }
       } else {
-        data.profilePicture = null;
+        data.profilePicture = null as unknown as FileList;
       }
-    } else {
-      console.log('profilePicture is either a string or not present');
     }
 
-    console.log('Final data:', data);
     dispatch(saveControlledFormData(data));
     navigate('/');
   };

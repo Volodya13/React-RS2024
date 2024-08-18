@@ -31,7 +31,11 @@ function ResultList({ data, title }: ResultListProps) {
           {item.profilePicture && (
             <div className={styles.listItem}>
               Profile Picture:
-              <img className={styles.profilePicture} src={item.profilePicture} alt="Profile" />
+              <img
+                className={styles.profilePicture}
+                src={item.profilePicture as unknown as string}
+                alt="Profile"
+              />
             </div>
           )}
         </div>

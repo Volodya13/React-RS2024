@@ -23,7 +23,7 @@ export const schema = yup.object().shape({
     .required('Please confirm your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
   gender: yup.string().required('Please select your gender'),
-  profilePicture: yup.string().nullable().required(),
+  profilePicture: yup.mixed().required('Profile picture is required'),
   termsAndConditions: yup
     .boolean()
     .oneOf([true], 'Please accept the terms and conditions')
